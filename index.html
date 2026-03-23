@@ -19,9 +19,7 @@ nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; a
 .nav-tab.active { background: var(--white); color: var(--black); border-color: var(--white); }
 #hero { padding: 120px 24px 60px; text-align: center; }
 .logo-block { display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 24px; }
-.logo-kc, .logo-fc { font-size: clamp(48px, 8vw, 72px); font-weight: 900; letter-spacing: -0.02em; line-height: 1; }
-.logo-crest { width: clamp(60px, 10vw, 100px); }
-.lion-svg { width: 100%; height: auto; filter: drop-shadow(0 0 20px rgba(255,255,255,0.15)); }
+.hero-logo { width: clamp(250px, 50vw, 500px); height: auto; }
 #hero h1 { font-size: clamp(24px, 4vw, 40px); font-weight: 900; letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 8px; }
 .hero-tagline { font-size: 16px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
 section { padding: 60px 24px 100px; }
@@ -120,44 +118,7 @@ footer { background: var(--black); border-top: 1px solid var(--border); text-ali
   </nav>
   <header id="hero">
     <div class="logo-block">
-      <span class="logo-kc">KC</span>
-      <div class="logo-crest">
-        <svg viewBox="0 0 200 240" xmlns="http://www.w3.org/2000/svg" class="lion-svg">
-          <path d="M128 185 Q148 180 155 162 Q160 145 148 135 Q140 128 132 134" stroke="white" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-          <path d="M132 134 Q126 130 130 122" stroke="white" stroke-width="5" fill="none" stroke-linecap="round"/>
-          <path d="M85 195 Q80 210 72 218 Q68 222 75 224 Q85 226 90 215 Q95 205 95 195Z" fill="white"/>
-          <path d="M112 192 Q110 208 105 218 Q102 224 112 224 Q120 222 118 212 Q116 202 115 192Z" fill="white"/>
-          <path d="M72 165 Q60 148 62 128 Q64 112 72 100 Q80 88 92 84 Q88 96 90 108 Q92 118 100 122 Q108 118 110 108 Q112 96 108 84 Q120 88 128 100 Q136 112 138 128 Q140 148 128 165 Q118 178 100 182 Q82 178 72 165Z" fill="white"/>
-          <path d="M126 118 Q138 108 144 94 Q148 84 144 76" stroke="white" stroke-width="9" fill="none" stroke-linecap="round"/>
-          <circle cx="144" cy="68" r="22" fill="white"/>
-          <polygon points="144,52 155,60 151,73 137,73 133,60" fill="black" opacity="0.18"/>
-          <polygon points="144,84 133,76 137,63 151,63 155,76" fill="black" opacity="0.12"/>
-          <line x1="133" y1="60" x2="122" y2="62" stroke="black" stroke-width="1.2" opacity="0.25"/>
-          <line x1="155" y1="60" x2="166" y2="62" stroke="black" stroke-width="1.2" opacity="0.25"/>
-          <line x1="151" y1="73" x2="158" y2="82" stroke="black" stroke-width="1.2" opacity="0.25"/>
-          <line x1="137" y1="73" x2="130" y2="82" stroke="black" stroke-width="1.2" opacity="0.25"/>
-          <path d="M74 118 Q66 106 62 94" stroke="white" stroke-width="9" fill="none" stroke-linecap="round"/>
-          <path d="M88 84 Q90 74 100 70 Q110 74 112 84" fill="white"/>
-          <path d="M100 18 L96 36 M100 18 L104 36" stroke="white" stroke-width="4" stroke-linecap="round"/>
-          <path d="M82 22 L88 38 M118 22 L112 38" stroke="white" stroke-width="4" stroke-linecap="round"/>
-          <path d="M68 34 L78 46 M132 34 L122 46" stroke="white" stroke-width="4" stroke-linecap="round"/>
-          <path d="M60 50 L72 58 M140 50 L128 58" stroke="white" stroke-width="4" stroke-linecap="round"/>
-          <path d="M58 68 L71 70 M142 68 L129 70" stroke="white" stroke-width="3.5" stroke-linecap="round"/>
-          <ellipse cx="100" cy="60" rx="26" ry="24" fill="white"/>
-          <path d="M78 44 Q72 30 82 28 Q90 34 86 46Z" fill="white"/>
-          <path d="M122 44 Q128 30 118 28 Q110 34 114 46Z" fill="white"/>
-          <ellipse cx="91" cy="56" rx="5" ry="5.5" fill="black"/>
-          <ellipse cx="109" cy="56" rx="5" ry="5.5" fill="black"/>
-          <circle cx="93" cy="54" r="1.5" fill="white"/>
-          <circle cx="111" cy="54" r="1.5" fill="white"/>
-          <path d="M97 62 Q100 66 103 62" stroke="black" stroke-width="1.5" fill="none"/>
-          <ellipse cx="100" cy="67" rx="7" ry="4" fill="black" opacity="0.15"/>
-          <path d="M93 70 Q100 76 107 70" stroke="black" stroke-width="1.8" fill="none" stroke-linecap="round"/>
-          <circle cx="86" cy="68" r="1.2" fill="black" opacity="0.4"/>
-          <circle cx="114" cy="68" r="1.2" fill="black" opacity="0.4"/>
-        </svg>
-      </div>
-      <span class="logo-fc">FC</span>
+      <img src="https://raw.githubusercontent.com/kicksforchips/kicks-for-chips/main/logo.png" alt="Kicks for CHiPS Logo" class="hero-logo" />
     </div>
     <h1>KICKS FOR CHIPS</h1>
     <p class="hero-tagline">Player Registration &mdash; $15 per player</p>
