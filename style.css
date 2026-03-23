@@ -505,6 +505,52 @@ h2 {
   margin: 0 auto;
 }
 
+/* ===== PENDING BANNER ===== */
+.pending-banner {
+  background: rgba(74, 222, 128, 0.08);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  border-radius: 4px;
+  padding: 24px;
+  margin-bottom: 32px;
+}
+
+.pending-content h3 {
+  font-size: 18px;
+  font-weight: 900;
+  letter-spacing: 0.05em;
+  text-transform: uppercase;
+  margin-bottom: 8px;
+  color: #4ade80;
+}
+
+.pending-content p {
+  font-size: 14px;
+  color: #ccc;
+  margin-bottom: 16px;
+}
+
+.pending-buttons {
+  display: flex;
+  gap: 12px;
+}
+
+.btn-cancel {
+  background: transparent;
+  color: var(--text-muted);
+  border: 1px solid var(--border);
+  padding: 12px 24px;
+  font-size: 13px;
+  font-weight: 700;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  border-radius: 2px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: opacity 0.2s;
+}
+
+.btn-cancel:hover { opacity: 0.7; }
+
 /* ===== FOOTER ===== */
 footer {
   background: var(--black);

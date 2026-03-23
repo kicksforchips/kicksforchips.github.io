@@ -6,6 +6,7 @@ const MAX_PLAYERS_PER_TEAM = 5;
 
 // ===== STATE =====
 let teams = JSON.parse(localStorage.getItem('k4c_teams') || '[]');
+let pendingReg = JSON.parse(localStorage.getItem('k4c_pending') || 'null');
 let teamMode = 'new'; // 'new' or 'join'
 let regMode = 'individual'; // 'individual' or 'team'
 
@@ -218,6 +219,51 @@ function registerPlayers(players, target) {
   populateTeamSelect();
 }
 
+// ===== PENDING REGISTRATION BANNER =====
+function showPendingBanner() {
+  if (!pendingReg) return;
+
+  // Remove existing banner if any
+  const existing = document.getElementById('pending-banner');
+  if (existing) existing.remove();
+
+  const banner = document.createElement('div');
+  banner.id = 'pending-banner';
+  banner.className = 'pending-banner';
+
+  const label = `Team ${pendingReg.target.number}`;
+  const names = pendingReg.players.map(p => p.firstName).join(', ');
+
+  banner.innerHTML = `
+    <div class="pending-content">
+      <h3>Payment Complete?</h3>
+      <p>Confirm your registration for <strong>${label}</strong> (${names})</p>
+      <div class="pending-buttons">
+        <button id="confirm-reg" class="btn-primary">I Paid — Confirm Registration</button>
+        <button id="cancel-reg" class="btn-cancel">Cancel</button>
+      </div>
+    </div>
+  `;
+
+  const container = document.querySelector('#signup .container');
+  container.insertBefore(banner, container.querySelector('h2').nextSibling);
+
+  document.getElementById('confirm-reg').addEventListener('click', () => {
+    registerPlayers(pendingReg.players, pendingReg.target);
+    setStatus(`Registration confirmed for Team ${pendingReg.target.number}!`, 'success');
+    pendingReg = null;
+    localStorage.removeItem('k4c_pending');
+    banner.remove();
+  });
+
+  document.getElementById('cancel-reg').addEventListener('click', () => {
+    pendingReg = null;
+    localStorage.removeItem('k4c_pending');
+    banner.remove();
+    setStatus('Registration cancelled.', 'error');
+  });
+}
+
 // ===== FORM SUBMIT =====
 const form = document.getElementById('registration-form');
 const statusEl = document.getElementById('form-status');
@@ -233,15 +279,13 @@ form.addEventListener('submit', (e) => {
   const target = validateTeamTarget();
   if (!target) return;
 
-  // Register players locally
-  registerPlayers(players, target);
+  // Save as pending (NOT registered yet)
+  const currentRegMode = regMode;
+  pendingReg = { players, target, regMode: currentRegMode };
+  localStorage.setItem('k4c_pending', JSON.stringify(pendingReg));
 
   const label = `Team ${target.number}`;
-  if (regMode === 'team') {
-    setStatus(`Team registered as ${label}! Redirecting to payment...`, 'success');
-  } else {
-    setStatus(`${players[0].firstName} registered to ${label}! Redirecting to payment...`, 'success');
-  }
+  setStatus(`Redirecting to payment... Come back here after paying to confirm your registration.`, 'success');
 
   // Reset form
   const formEl = document.getElementById('registration-form');
@@ -250,10 +294,8 @@ form.addEventListener('submit', (e) => {
   toggleBtns[0].click();
 
   // Redirect to Square checkout
-  setTimeout(() => {
-    const url = regMode === 'team' ? CHECKOUT_TEAM : CHECKOUT_INDIVIDUAL;
-    window.open(url, '_blank');
-  }, 1000);
+  const url = currentRegMode === 'team' ? CHECKOUT_TEAM : CHECKOUT_INDIVIDUAL;
+  window.open(url, '_blank');
 });
 
 function setStatus(msg, type) {
@@ -263,3 +305,4 @@ function setStatus(msg, type) {
 
 // ===== INIT =====
 renderRoster();
+showPendingBanner();
