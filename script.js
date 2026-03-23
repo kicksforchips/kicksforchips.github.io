@@ -1,104 +1,197 @@
 // ===== CONFIG =====
+const SUPABASE_URL = 'https://ivjaznyfqfifgyfnwbhg.supabase.co';
+const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2amF6bnlmcWZpZmd5Zm53YmhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMzI0NjMsImV4cCI6MjA4OTgwODQ2M30.5wozfDagfVK7nYCdre5PPllVBa_DYDzRwHFWzTAXJpc';
 const CHECKOUT_INDIVIDUAL = 'https://checkout.square.site/merchant/MLC0HN2RN1CZH/checkout/WHQ256VJPFU6F2NHF4CXZWET?src=sheet';
 const CHECKOUT_TEAM = 'https://checkout.square.site/merchant/MLC0HN2RN1CZH/checkout/OBBAR7PSJSMQ76RBOCISYRJT?src=sheet';
 const MAX_TEAMS = 20;
 const MAX_PLAYERS_PER_TEAM = 5;
-const PENDING_EXPIRY_MS = 30 * 60 * 1000; // 30 minutes
+const PENDING_EXPIRY_MS = 30 * 60 * 1000;
+
+// ===== SUPABASE HELPERS =====
+async function supabaseGet() {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/registrations?select=*&order=created_at.asc`, {
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+    }
+  });
+  if (!res.ok) return [];
+  return res.json();
+}
+
+async function supabaseInsert(rows) {
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/registrations`, {
+    method: 'POST',
+    headers: {
+      'apikey': SUPABASE_KEY,
+      'Authorization': `Bearer ${SUPABASE_KEY}`,
+      'Content-Type': 'application/json',
+      'Prefer': 'return=representation',
+    },
+    body: JSON.stringify(rows),
+  });
+  return res.ok;
+}
 
 // ===== STATE =====
-let teams = JSON.parse(localStorage.getItem('k4c_teams') || '[]');
-let pendingReg = JSON.parse(localStorage.getItem('k4c_pending') || 'null');
+let teams = []; // built from DB rows
 let teamMode = 'new';
 let regMode = 'individual';
+
+// ===== BUILD TEAMS FROM DB ROWS =====
+function buildTeams(rows) {
+  const teamMap = {};
+  rows.forEach(r => {
+    if (!teamMap[r.team_number]) {
+      teamMap[r.team_number] = { number: r.team_number, players: [] };
+    }
+    teamMap[r.team_number].players.push({ firstName: r.first_name, lastName: r.last_name || '' });
+  });
+  return Object.values(teamMap).sort((a, b) => a.number - b.number);
+}
+
+// ===== LOAD TEAMS FROM SUPABASE =====
+async function loadTeams() {
+  const rows = await supabaseGet();
+  teams = buildTeams(rows);
+  renderRoster();
+  populateTeamSelect();
+}
 
 // ===== CHECK FOR PAYMENT RETURN =====
 const urlParams = new URLSearchParams(window.location.search);
 const paidParam = urlParams.get('paid');
 
-if (paidParam && pendingReg) {
-  // Verify pending data isn't stale (must be within 30 min)
-  const age = Date.now() - (pendingReg.timestamp || 0);
-  if (age < PENDING_EXPIRY_MS) {
-    // They came back from Square with ?paid= — register them
-    registerPlayers(pendingReg.players, pendingReg.target);
+async function handlePaymentReturn() {
+  const pendingReg = JSON.parse(localStorage.getItem('k4c_pending') || 'null');
+
+  if (paidParam && pendingReg) {
+    const age = Date.now() - (pendingReg.timestamp || 0);
+    if (age < PENDING_EXPIRY_MS) {
+      // Build rows for Supabase
+      const rows = pendingReg.players.map(p => ({
+        team_number: pendingReg.target.number,
+        first_name: p.firstName,
+        last_name: p.lastName || '',
+      }));
+
+      const success = await supabaseInsert(rows);
+      if (success) {
+        await loadTeams();
+        const statusEl = document.getElementById('form-status');
+        if (statusEl) {
+          statusEl.textContent = 'Payment confirmed! Registration complete.';
+          statusEl.className = 'success';
+        }
+      }
+    }
+    // Clear pending
+    localStorage.removeItem('k4c_pending');
+    window.history.replaceState({}, '', window.location.pathname);
+  } else if (!paidParam && localStorage.getItem('k4c_pending')) {
+    // Came back without ?paid= — they cancelled
+    localStorage.removeItem('k4c_pending');
   }
-  // Always clear pending after processing
-  pendingReg = null;
-  localStorage.removeItem('k4c_pending');
-  // Clean up the URL
-  window.history.replaceState({}, '', window.location.pathname);
-} else if (!paidParam && pendingReg) {
-  // They came back WITHOUT ?paid= — they cancelled/X'd out
-  // Clear the pending registration so they can't cheat
-  pendingReg = null;
-  localStorage.removeItem('k4c_pending');
 }
 
 // ===== VIEW TOGGLING =====
-const tabs = document.querySelectorAll('.nav-tab');
-const views = document.querySelectorAll('.view');
+document.addEventListener('DOMContentLoaded', async () => {
+  const tabs = document.querySelectorAll('.nav-tab');
+  const views = document.querySelectorAll('.view');
 
-tabs.forEach(tab => {
-  tab.addEventListener('click', () => {
-    const target = tab.dataset.view;
-    tabs.forEach(t => t.classList.remove('active'));
-    tab.classList.add('active');
-    views.forEach(v => v.classList.toggle('active', v.id === target));
+  tabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      const target = tab.dataset.view;
+      tabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      views.forEach(v => v.classList.toggle('active', v.id === target));
+    });
   });
-});
 
-// ===== REGISTRATION MODE TOGGLE =====
-const modeBtns = document.querySelectorAll('.mode-btn');
-const individualFields = document.getElementById('individual-fields');
-const teamFields = document.getElementById('team-fields');
-const teamAssignment = document.getElementById('team-assignment');
-const submitBtn = document.getElementById('submit-btn');
+  // ===== REGISTRATION MODE TOGGLE =====
+  const modeBtns = document.querySelectorAll('.mode-btn');
+  const individualFields = document.getElementById('individual-fields');
+  const teamFields = document.getElementById('team-fields');
+  const teamAssignment = document.getElementById('team-assignment');
+  const submitBtn = document.getElementById('submit-btn');
 
-modeBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    regMode = btn.dataset.regMode;
-    modeBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+  modeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      regMode = btn.dataset.regMode;
+      modeBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
 
-    if (regMode === 'team') {
-      individualFields.classList.add('hidden');
-      teamFields.classList.remove('hidden');
-      teamAssignment.classList.add('hidden');
-      submitBtn.textContent = 'Pay $75 & Register Team';
-    } else {
-      individualFields.classList.remove('hidden');
-      teamFields.classList.add('hidden');
-      teamAssignment.classList.remove('hidden');
-      submitBtn.textContent = 'Pay $15 & Register';
-    }
+      if (regMode === 'team') {
+        individualFields.classList.add('hidden');
+        teamFields.classList.remove('hidden');
+        teamAssignment.classList.add('hidden');
+        submitBtn.textContent = 'Pay $75 & Register Team';
+      } else {
+        individualFields.classList.remove('hidden');
+        teamFields.classList.add('hidden');
+        teamAssignment.classList.remove('hidden');
+        submitBtn.textContent = 'Pay $15 & Register';
+      }
+    });
   });
-});
 
-// ===== TEAM MODE TOGGLE =====
-const toggleBtns = document.querySelectorAll('.toggle-btn');
-const joinInput = document.getElementById('join-team-input');
-const newInfo = document.getElementById('new-team-info');
+  // ===== TEAM MODE TOGGLE =====
+  const toggleBtns = document.querySelectorAll('.toggle-btn');
+  const joinInput = document.getElementById('join-team-input');
+  const newInfo = document.getElementById('new-team-info');
 
-toggleBtns.forEach(btn => {
-  btn.addEventListener('click', () => {
-    teamMode = btn.dataset.teamMode;
-    toggleBtns.forEach(b => b.classList.remove('active'));
-    btn.classList.add('active');
+  toggleBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      teamMode = btn.dataset.teamMode;
+      toggleBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
 
-    if (teamMode === 'join') {
-      joinInput.classList.remove('hidden');
-      newInfo.classList.add('hidden');
-      populateTeamSelect();
-    } else {
-      joinInput.classList.add('hidden');
-      newInfo.classList.remove('hidden');
-    }
+      if (teamMode === 'join') {
+        joinInput.classList.remove('hidden');
+        newInfo.classList.add('hidden');
+        populateTeamSelect();
+      } else {
+        joinInput.classList.add('hidden');
+        newInfo.classList.remove('hidden');
+      }
+    });
   });
+
+  // ===== FORM SUBMIT =====
+  const form = document.getElementById('registration-form');
+
+  form.addEventListener('submit', async (e) => {
+    e.preventDefault();
+
+    // Reload latest teams before validating
+    await loadTeams();
+
+    const players = validateAndCollectPlayers();
+    if (!players) return;
+
+    const target = validateTeamTarget();
+    if (!target) return;
+
+    // Save as pending with timestamp
+    const pendingReg = { players, target, regMode, timestamp: Date.now() };
+    localStorage.setItem('k4c_pending', JSON.stringify(pendingReg));
+
+    setStatus('Redirecting to payment...', 'success');
+
+    // Redirect to Square checkout
+    const url = regMode === 'team' ? CHECKOUT_TEAM : CHECKOUT_INDIVIDUAL;
+    window.location.href = url;
+  });
+
+  // ===== INIT =====
+  await handlePaymentReturn();
+  await loadTeams();
 });
 
 // ===== POPULATE TEAM DROPDOWN =====
 function populateTeamSelect() {
   const select = document.getElementById('teamNumber');
+  if (!select) return;
   select.innerHTML = '<option value="">Select a team to join...</option>';
 
   teams.forEach(team => {
@@ -122,6 +215,7 @@ function populateTeamSelect() {
 // ===== RENDER ROSTER =====
 function renderRoster() {
   const roster = document.getElementById('roster');
+  if (!roster) return;
 
   if (teams.length === 0) {
     roster.innerHTML = '<p class="no-teams">No teams registered yet. Be the first!</p>';
@@ -145,11 +239,6 @@ function renderRoster() {
       </div>
     `;
   }).join('');
-}
-
-// ===== SAVE TEAMS =====
-function saveTeams() {
-  localStorage.setItem('k4c_teams', JSON.stringify(teams));
 }
 
 // ===== GET NEXT TEAM NUMBER =====
@@ -225,61 +314,11 @@ function validateTeamTarget() {
   return { mode: 'new', number: num };
 }
 
-// ===== REGISTER PLAYERS =====
-function registerPlayers(players, target) {
-  if (target.mode === 'join') {
-    const team = teams.find(t => t.number === target.number);
-    players.forEach(p => team.players.push(p));
-  } else {
-    teams.push({
-      number: target.number,
-      players: players,
-    });
-  }
-
-  saveTeams();
-  renderRoster();
-  populateTeamSelect();
-}
-
-// ===== FORM SUBMIT =====
-const form = document.getElementById('registration-form');
-const statusEl = document.getElementById('form-status');
-
-form.addEventListener('submit', (e) => {
-  e.preventDefault();
-
-  const players = validateAndCollectPlayers();
-  if (!players) return;
-
-  const target = validateTeamTarget();
-  if (!target) return;
-
-  // Save as pending with timestamp
-  const currentRegMode = regMode;
-  pendingReg = { players, target, regMode: currentRegMode, timestamp: Date.now() };
-  localStorage.setItem('k4c_pending', JSON.stringify(pendingReg));
-
-  setStatus('Redirecting to payment...', 'success');
-
-  // Redirect to Square checkout
-  const url = currentRegMode === 'team' ? CHECKOUT_TEAM : CHECKOUT_INDIVIDUAL;
-  window.location.href = url;
-});
-
+// ===== STATUS =====
 function setStatus(msg, type) {
-  statusEl.textContent = msg;
-  statusEl.className = type;
-}
-
-// ===== INIT =====
-renderRoster();
-
-// Show success message if just returned from payment
-if (paidParam) {
   const statusEl = document.getElementById('form-status');
   if (statusEl) {
-    statusEl.textContent = 'Payment confirmed! Registration complete.';
-    statusEl.className = 'success';
+    statusEl.textContent = msg;
+    statusEl.className = type;
   }
 }
