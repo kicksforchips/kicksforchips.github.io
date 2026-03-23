@@ -1,6 +1,6 @@
 // ===== CONFIG =====
-const SQUARE_APP_ID = 'sq0idp-SIAb7Bit66sbtwCW5_soBA';
-const SQUARE_LOCATION_ID = 'LWZWSDG';
+const CHECKOUT_INDIVIDUAL = 'https://checkout.square.site/merchant/MLC0HN2RN1CZH/checkout/WHQ256VJPFU6F2NHF4CXZWET?src=sheet';
+const CHECKOUT_TEAM = 'https://checkout.square.site/merchant/MLC0HN2RN1CZH/checkout/OBBAR7PSJSMQ76RBOCISYRJT?src=sheet';
 const MAX_TEAMS = 20;
 const MAX_PLAYERS_PER_TEAM = 5;
 
@@ -8,8 +8,6 @@ const MAX_PLAYERS_PER_TEAM = 5;
 let teams = JSON.parse(localStorage.getItem('k4c_teams') || '[]');
 let teamMode = 'new'; // 'new' or 'join'
 let regMode = 'individual'; // 'individual' or 'team'
-let card = null;
-let applePay = null;
 
 // ===== VIEW TOGGLING =====
 const tabs = document.querySelectorAll('.nav-tab');
@@ -29,7 +27,6 @@ const modeBtns = document.querySelectorAll('.mode-btn');
 const individualFields = document.getElementById('individual-fields');
 const teamFields = document.getElementById('team-fields');
 const teamAssignment = document.getElementById('team-assignment');
-const priceLabel = document.getElementById('price-label');
 const submitBtn = document.getElementById('submit-btn');
 
 modeBtns.forEach(btn => {
@@ -42,17 +39,13 @@ modeBtns.forEach(btn => {
       individualFields.classList.add('hidden');
       teamFields.classList.remove('hidden');
       teamAssignment.classList.add('hidden');
-      priceLabel.textContent = '$5.00';
       submitBtn.textContent = 'Pay $5 & Register Team';
     } else {
       individualFields.classList.remove('hidden');
       teamFields.classList.add('hidden');
       teamAssignment.classList.remove('hidden');
-      priceLabel.textContent = '$1.00';
       submitBtn.textContent = 'Pay $1 & Register';
     }
-
-    updateApplePayAmount();
   });
 });
 
@@ -144,67 +137,6 @@ function getNextTeamNumber() {
   return null;
 }
 
-// ===== GET CURRENT AMOUNT =====
-function getCurrentAmount() {
-  return regMode === 'team' ? '5.00' : '1.00';
-}
-
-// ===== UPDATE APPLE PAY AMOUNT =====
-function updateApplePayAmount() {
-  // Apple Pay amount is set at tokenize time via paymentRequest, no runtime update needed
-}
-
-// ===== CREATE PAYMENT REQUEST FOR APPLE PAY =====
-function createPaymentRequest(payments) {
-  return payments.paymentRequest({
-    countryCode: 'US',
-    currencyCode: 'USD',
-    total: {
-      amount: getCurrentAmount(),
-      label: regMode === 'team' ? 'K4C Team Registration (5 players)' : 'K4C Player Registration',
-    },
-  });
-}
-
-// ===== SQUARE PAYMENT INIT =====
-async function initSquarePayment() {
-  const statusEl = document.getElementById('payment-status');
-
-  try {
-    const payments = window.Square.payments(SQUARE_APP_ID, SQUARE_LOCATION_ID);
-
-    // Card form
-    card = await payments.card();
-    await card.attach('#card-container');
-
-    // Apple Pay
-    try {
-      const paymentRequest = createPaymentRequest(payments);
-      applePay = await payments.applePay(paymentRequest);
-      // Apple Pay button is auto-rendered by the SDK inside #apple-pay-container
-      const apContainer = document.getElementById('apple-pay-container');
-      // Insert a divider before Apple Pay
-      const divider = document.createElement('div');
-      divider.className = 'pay-divider';
-      divider.textContent = 'or';
-      apContainer.parentNode.insertBefore(divider, apContainer);
-      await applePay.attach('#apple-pay-container');
-    } catch (apErr) {
-      console.log('Apple Pay not available:', apErr.message || apErr);
-      const apContainer = document.getElementById('apple-pay-container');
-      apContainer.innerHTML = '<p style="color:#f87171;font-size:13px;margin-top:8px;">Apple Pay: ' + (apErr.message || apErr) + '</p>';
-    }
-
-    statusEl.textContent = 'Payment ready.';
-    statusEl.className = 'ready';
-    submitBtn.disabled = false;
-  } catch (e) {
-    console.error('Square init error:', e);
-    statusEl.textContent = 'Could not load payment form. Please refresh and try again.';
-    statusEl.className = 'error';
-  }
-}
-
 // ===== VALIDATE & COLLECT PLAYERS =====
 function validateAndCollectPlayers() {
   const form = document.getElementById('registration-form');
@@ -238,7 +170,6 @@ function validateAndCollectPlayers() {
 // ===== VALIDATE TEAM TARGET =====
 function validateTeamTarget() {
   if (regMode === 'team') {
-    // Whole team always creates a new team
     const num = getNextTeamNumber();
     if (num === null) {
       setStatus('All 20 teams are full. Registration is closed.', 'error');
@@ -247,7 +178,6 @@ function validateTeamTarget() {
     return { mode: 'new', number: num };
   }
 
-  // Individual
   if (teamMode === 'join') {
     const selected = document.getElementById('teamNumber').value;
     if (!selected) {
@@ -288,60 +218,42 @@ function registerPlayers(players, target) {
   populateTeamSelect();
 }
 
-// ===== PROCESS PAYMENT RESULT =====
-function processPaymentResult(result, players, target) {
-  if (result.status === 'OK') {
-    registerPlayers(players, target);
-
-    const label = `Team ${target.number}`;
-    if (regMode === 'team') {
-      setStatus(`Payment successful! Your team is registered as ${label}.`, 'success');
-    } else {
-      setStatus(`Payment successful! ${players[0].firstName} registered to ${label}.`, 'success');
-    }
-
-    // Reset form
-    const form = document.getElementById('registration-form');
-    form.reset();
-    modeBtns[0].click(); // back to individual
-    toggleBtns[0].click(); // back to new team
-    return true;
-  } else {
-    let errorMsg = 'Payment failed.';
-    if (result.errors) {
-      errorMsg = result.errors.map(e => e.message).join(' ');
-    }
-    setStatus(errorMsg, 'error');
-    return false;
-  }
-}
-
-// ===== FORM SUBMIT (Card Payment) =====
+// ===== FORM SUBMIT =====
 const form = document.getElementById('registration-form');
 const statusEl = document.getElementById('form-status');
 
-form.addEventListener('submit', async (e) => {
+form.addEventListener('submit', (e) => {
   e.preventDefault();
 
+  // Validate names
   const players = validateAndCollectPlayers();
   if (!players) return;
 
+  // Validate team target
   const target = validateTeamTarget();
   if (!target) return;
 
-  submitBtn.disabled = true;
-  submitBtn.textContent = 'Processing...';
+  // Register players locally
+  registerPlayers(players, target);
 
-  try {
-    const result = await card.tokenize();
-    processPaymentResult(result, players, target);
-  } catch (err) {
-    console.error('Payment error:', err);
-    setStatus('Payment error. Please try again.', 'error');
+  const label = `Team ${target.number}`;
+  if (regMode === 'team') {
+    setStatus(`Team registered as ${label}! Redirecting to payment...`, 'success');
+  } else {
+    setStatus(`${players[0].firstName} registered to ${label}! Redirecting to payment...`, 'success');
   }
 
-  submitBtn.disabled = false;
-  submitBtn.textContent = regMode === 'team' ? 'Pay $5 & Register Team' : 'Pay $1 & Register';
+  // Reset form
+  const formEl = document.getElementById('registration-form');
+  formEl.reset();
+  modeBtns[0].click();
+  toggleBtns[0].click();
+
+  // Redirect to Square checkout
+  setTimeout(() => {
+    const url = regMode === 'team' ? CHECKOUT_TEAM : CHECKOUT_INDIVIDUAL;
+    window.open(url, '_blank');
+  }, 1000);
 });
 
 function setStatus(msg, type) {
@@ -351,17 +263,3 @@ function setStatus(msg, type) {
 
 // ===== INIT =====
 renderRoster();
-
-// Load Square SDK
-if (window.Square) {
-  initSquarePayment();
-} else {
-  document.getElementById('payment-status').textContent = 'Loading payment form...';
-  document.getElementById('payment-status').className = '';
-  const checkSquare = setInterval(() => {
-    if (window.Square) {
-      clearInterval(checkSquare);
-      initSquarePayment();
-    }
-  }, 500);
-}

@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register — Kicks for CHiPS</title>
   <link rel="stylesheet" href="style.css" />
-  <script src="https://web.squarecdn.com/v1/square.js"></script>
 </head>
 <body>
 
@@ -104,14 +103,11 @@
 
         <!-- Payment -->
         <div class="payment-section">
-          <div class="section-label">Payment &mdash; <span id="price-label">$1.00</span></div>
-          <div id="card-container"></div>
-          <div id="apple-pay-container"></div>
-          <div id="payment-status"></div>
+          <div class="section-label">Payment</div>
+          <p class="pay-info">You'll be redirected to Square's secure checkout. Apple Pay, Google Pay, and card payments are all accepted.</p>
         </div>
 
-        <button type="submit" class="btn-primary submit-btn" disabled id="submit-btn">Pay $1 &amp; Register</button>
-        <p class="pay-notice">Complete payment to register. Your team assignment will be confirmed after payment.</p>
+        <button type="submit" class="btn-primary submit-btn" id="submit-btn">Pay $1 &amp; Register</button>
         <div id="form-status"></div>
       </form>
 
