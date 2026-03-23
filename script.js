@@ -181,8 +181,15 @@ document.addEventListener('DOMContentLoaded', async () => {
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
 
+    // Save selected team number BEFORE reloading (reload resets dropdown)
+    const savedTeamSelection = document.getElementById('teamNumber').value;
+
     // Reload latest teams before validating
     await loadTeams();
+
+    // Restore the selection after reload
+    const teamSelect = document.getElementById('teamNumber');
+    if (savedTeamSelection) teamSelect.value = savedTeamSelection;
 
     const result = validateAndCollectPlayers();
     if (!result) return;
