@@ -263,6 +263,11 @@ function validateAndCollectPlayers() {
       form.querySelector('#firstName').focus();
       return null;
     }
+    if (!lastName) {
+      setStatus('Please enter your last name.', 'error');
+      form.querySelector('#lastName').focus();
+      return null;
+    }
     return [{ firstName, lastName }];
   }
 
@@ -273,6 +278,11 @@ function validateAndCollectPlayers() {
     if (!first) {
       setStatus(`Please enter a first name for Player ${i}.`, 'error');
       form.querySelector(`[name="teamFirst${i}"]`).focus();
+      return null;
+    }
+    if (!last) {
+      setStatus(`Please enter a last name for Player ${i}.`, 'error');
+      form.querySelector(`[name="teamLast${i}"]`).focus();
       return null;
     }
     players.push({ firstName: first, lastName: last });
