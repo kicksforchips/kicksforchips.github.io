@@ -4,111 +4,12 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Register — Kicks for CHiPS</title>
+  <link rel="stylesheet" href="style.css" />
   <script src="https://web.squarecdn.com/v1/square.js"></script>
-  <style>
-*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-:root { --black: #000; --white: #fff; --gray: #111; --gray-mid: #1a1a1a; --gray-light: #2a2a2a; --text-muted: #888; --border: rgba(255,255,255,0.12); }
-html { scroll-behavior: smooth; }
-body { background: var(--black); color: var(--white); font-family: 'Helvetica Neue', Arial, sans-serif; font-size: 16px; line-height: 1.6; }
-a { color: inherit; text-decoration: none; }
-nav { position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 20px 48px; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); border-bottom: 1px solid var(--border); }
-.nav-logo { font-size: 20px; font-weight: 900; letter-spacing: 0.2em; text-transform: uppercase; }
-.nav-tabs { display: flex; gap: 8px; }
-.nav-tab { background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 10px 22px; font-size: 13px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all 0.2s; font-family: inherit; }
-.nav-tab:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
-.nav-tab.active { background: var(--white); color: var(--black); border-color: var(--white); }
-#hero { padding: 120px 24px 60px; text-align: center; }
-.logo-block { display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 24px; }
-.hero-logo { width: clamp(250px, 50vw, 500px); height: auto; }
-#hero h1 { font-size: clamp(24px, 4vw, 40px); font-weight: 900; letter-spacing: 0.25em; text-transform: uppercase; margin-bottom: 8px; }
-.hero-tagline { font-size: 16px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
-section { padding: 60px 24px 100px; }
-.container { max-width: 700px; margin: 0 auto; }
-.section-label { font-size: 11px; font-weight: 700; letter-spacing: 0.25em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
-h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 900; line-height: 1.05; letter-spacing: -0.02em; margin-bottom: 40px; }
-.view { display: none; } .view.active { display: block; }
-#signup { background: var(--gray); }
-.form-group { margin-bottom: 20px; }
-.form-group label { display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
-.form-group label .required { color: #f87171; }
-.form-group input, .form-group select { width: 100%; background: var(--gray-mid); border: 1px solid var(--border); color: var(--white); padding: 14px 18px; font-size: 15px; border-radius: 2px; outline: none; transition: border-color 0.2s; font-family: inherit; }
-.form-group input::placeholder { color: var(--text-muted); }
-.form-group input:focus, .form-group select:focus { border-color: var(--white); }
-.team-section { margin: 40px 0; padding: 32px; border: 1px solid var(--border); border-radius: 4px; background: rgba(255,255,255,0.02); }
-.team-section .section-label { margin-bottom: 20px; }
-.team-toggle { display: flex; gap: 8px; margin-bottom: 20px; }
-.toggle-btn { flex: 1; background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 12px 16px; font-size: 13px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all 0.2s; font-family: inherit; }
-.toggle-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
-.toggle-btn.active { background: var(--white); color: var(--black); border-color: var(--white); }
-#join-team-input label { display: block; font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 8px; }
-#join-team-input select { width: 100%; background: var(--gray-mid); border: 1px solid var(--border); color: var(--white); padding: 14px 18px; font-size: 15px; border-radius: 2px; outline: none; transition: border-color 0.2s; font-family: inherit; appearance: none; }
-#join-team-input select:focus { border-color: var(--white); }
-.field-hint { margin-top: 8px; font-size: 13px; color: var(--text-muted); }
-.hidden { display: none !important; }
-.reg-mode-toggle { display: flex; gap: 8px; margin-bottom: 40px; }
-.mode-btn { flex: 1; background: transparent; color: var(--text-muted); border: 1px solid var(--border); padding: 16px 16px; font-size: 14px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; cursor: pointer; border-radius: 2px; transition: all 0.2s; font-family: inherit; }
-.mode-btn:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
-.mode-btn.active { background: var(--white); color: var(--black); border-color: var(--white); }
-.players-grid { display: flex; flex-direction: column; gap: 16px; margin-bottom: 16px; }
-.player-row { display: grid; grid-template-columns: 90px 1fr 1fr; gap: 12px; align-items: center; }
-.player-label { font-size: 13px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--text-muted); }
-.player-row input { background: var(--gray-mid); border: 1px solid var(--border); color: var(--white); padding: 14px 18px; font-size: 15px; border-radius: 2px; outline: none; transition: border-color 0.2s; width: 100%; font-family: inherit; }
-.player-row input::placeholder { color: var(--text-muted); }
-.player-row input:focus { border-color: var(--white); }
-#apple-pay-container { margin-top: 12px; min-height: 0; }
-#apple-pay-container:empty { display: none; }
-.pay-divider { text-align: center; color: var(--text-muted); font-size: 12px; letter-spacing: 0.15em; text-transform: uppercase; margin: 16px 0; position: relative; }
-.pay-divider::before, .pay-divider::after { content: ''; position: absolute; top: 50%; width: 40%; height: 1px; background: var(--border); }
-.pay-divider::before { left: 0; } .pay-divider::after { right: 0; }
-.payment-section { margin: 40px 0 32px; }
-.payment-section .section-label { margin-bottom: 12px; }
-#card-container { background: var(--gray-mid); border: 1px solid var(--border); border-radius: 2px; padding: 24px; min-height: 80px; }
-#payment-status { margin-top: 8px; font-size: 13px; text-align: center; }
-#payment-status.ready { color: #4ade80; } #payment-status.error { color: #f87171; }
-.btn-primary { background: var(--white); color: var(--black); padding: 16px 32px; font-size: 14px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; border: none; border-radius: 2px; cursor: pointer; transition: opacity 0.2s; display: inline-block; font-family: inherit; }
-.btn-primary:hover { opacity: 0.85; }
-.submit-btn { width: 100%; padding: 18px; font-size: 15px; }
-.submit-btn:disabled { opacity: 0.35; cursor: not-allowed; }
-.pay-notice { margin-top: 12px; font-size: 13px; color: var(--text-muted); text-align: center; }
-#form-status { margin-top: 16px; font-size: 14px; color: var(--text-muted); text-align: center; min-height: 20px; }
-#form-status.success { color: #4ade80; } #form-status.error { color: #f87171; }
-.roster-section { margin-top: 64px; padding-top: 48px; border-top: 1px solid var(--border); }
-#roster { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-.team-card { border: 1px solid var(--border); border-radius: 4px; padding: 20px; background: rgba(255,255,255,0.02); }
-.team-card.full { opacity: 0.5; }
-.team-card-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px; }
-.team-number { font-size: 14px; font-weight: 900; letter-spacing: 0.1em; text-transform: uppercase; }
-.team-count { font-size: 11px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
-.team-players { list-style: none; }
-.team-players li { font-size: 14px; padding: 4px 0; color: #ccc; border-bottom: 1px solid rgba(255,255,255,0.05); }
-.team-players li:last-child { border-bottom: none; }
-.no-teams { color: var(--text-muted); font-size: 14px; text-align: center; padding: 32px; grid-column: 1 / -1; }
-#about { background: var(--gray); }
-.about-text { margin-bottom: 48px; }
-.about-text p { color: #bbb; font-size: 17px; line-height: 1.7; margin-bottom: 16px; }
-.prizes { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; margin-bottom: 48px; }
-.prize-card { border: 1px solid var(--border); border-radius: 4px; padding: 40px 32px; text-align: center; }
-.prize-card.winners { border-color: var(--white); background: rgba(255,255,255,0.06); }
-.prize-card.losers { border-color: rgba(255,255,255,0.3); background: rgba(255,255,255,0.03); }
-.prize-label { font-size: 11px; font-weight: 700; letter-spacing: 0.2em; text-transform: uppercase; color: var(--text-muted); margin-bottom: 16px; }
-.prize-amount { font-size: 48px; font-weight: 900; letter-spacing: -0.02em; margin-bottom: 8px; }
-.prize-detail { font-size: 13px; color: var(--text-muted); letter-spacing: 0.1em; text-transform: uppercase; }
-.about-footer p { color: var(--text-muted); font-size: 15px; line-height: 1.7; text-align: center; max-width: 500px; margin: 0 auto; }
-footer { background: var(--black); border-top: 1px solid var(--border); text-align: center; padding: 32px 24px; font-size: 13px; color: var(--text-muted); }
-@media (max-width: 600px) {
-  nav { padding: 16px 20px; flex-direction: column; gap: 12px; }
-  .nav-tabs { width: 100%; }
-  .nav-tab { flex: 1; text-align: center; font-size: 11px; padding: 10px 12px; }
-  .team-toggle { flex-direction: column; }
-  .reg-mode-toggle { flex-direction: column; }
-  .player-row { grid-template-columns: 1fr; gap: 8px; }
-  .player-label { margin-bottom: 0; }
-  #roster { grid-template-columns: 1fr; }
-  .prizes { grid-template-columns: 1fr; }
-}
-  </style>
 </head>
 <body>
+
+  <!-- NAV -->
   <nav>
     <div class="nav-logo">K4C</div>
     <div class="nav-tabs">
@@ -116,23 +17,30 @@ footer { background: var(--black); border-top: 1px solid var(--border); text-ali
       <button class="nav-tab" data-view="about">About the Tournament</button>
     </div>
   </nav>
+
+  <!-- HERO HEADER -->
   <header id="hero">
     <div class="logo-block">
-      <img src="logo.png" alt="Kicks for CHiPS Logo" class="hero-logo" />
+      <img src="logo.png" alt="Kicks for CHiPS" class="logo-img" />
     </div>
     <h1>KICKS FOR CHIPS</h1>
     <p class="hero-tagline">Player Registration &mdash; $15 per player</p>
   </header>
 
+  <!-- SIGN UP VIEW -->
   <section id="signup" class="view active">
     <div class="container">
       <div class="section-label">Register</div>
       <h2>Sign Up</h2>
+
+      <!-- Registration Mode Toggle -->
       <div class="reg-mode-toggle">
         <button type="button" class="mode-btn active" data-reg-mode="individual">Register Myself &mdash; $15</button>
         <button type="button" class="mode-btn" data-reg-mode="team">Register Whole Team &mdash; $75</button>
       </div>
+
       <form id="registration-form">
+        <!-- Individual: Your Info -->
         <div id="individual-fields">
           <div class="form-group">
             <label for="firstName">First Name <span class="required">*</span></label>
@@ -143,15 +51,39 @@ footer { background: var(--black); border-top: 1px solid var(--border); text-ali
             <input type="text" id="lastName" name="lastName" placeholder="Your last name (optional)" />
           </div>
         </div>
+
+        <!-- Team Registration: All 5 Players -->
         <div id="team-fields" class="hidden">
           <div class="players-grid">
-            <div class="player-row"><span class="player-label">Player 1</span><input type="text" name="teamFirst1" placeholder="First Name *" /><input type="text" name="teamLast1" placeholder="Last Name" /></div>
-            <div class="player-row"><span class="player-label">Player 2</span><input type="text" name="teamFirst2" placeholder="First Name *" /><input type="text" name="teamLast2" placeholder="Last Name" /></div>
-            <div class="player-row"><span class="player-label">Player 3</span><input type="text" name="teamFirst3" placeholder="First Name *" /><input type="text" name="teamLast3" placeholder="Last Name" /></div>
-            <div class="player-row"><span class="player-label">Player 4</span><input type="text" name="teamFirst4" placeholder="First Name *" /><input type="text" name="teamLast4" placeholder="Last Name" /></div>
-            <div class="player-row"><span class="player-label">Player 5</span><input type="text" name="teamFirst5" placeholder="First Name *" /><input type="text" name="teamLast5" placeholder="Last Name" /></div>
+            <div class="player-row">
+              <span class="player-label">Player 1</span>
+              <input type="text" name="teamFirst1" placeholder="First Name *" />
+              <input type="text" name="teamLast1" placeholder="Last Name" />
+            </div>
+            <div class="player-row">
+              <span class="player-label">Player 2</span>
+              <input type="text" name="teamFirst2" placeholder="First Name *" />
+              <input type="text" name="teamLast2" placeholder="Last Name" />
+            </div>
+            <div class="player-row">
+              <span class="player-label">Player 3</span>
+              <input type="text" name="teamFirst3" placeholder="First Name *" />
+              <input type="text" name="teamLast3" placeholder="Last Name" />
+            </div>
+            <div class="player-row">
+              <span class="player-label">Player 4</span>
+              <input type="text" name="teamFirst4" placeholder="First Name *" />
+              <input type="text" name="teamLast4" placeholder="Last Name" />
+            </div>
+            <div class="player-row">
+              <span class="player-label">Player 5</span>
+              <input type="text" name="teamFirst5" placeholder="First Name *" />
+              <input type="text" name="teamLast5" placeholder="Last Name" />
+            </div>
           </div>
         </div>
+
+        <!-- Team Assignment (individual mode only) -->
         <div id="team-assignment" class="team-section">
           <div class="section-label">Team Assignment</div>
           <div class="team-toggle">
@@ -160,23 +92,30 @@ footer { background: var(--black); border-top: 1px solid var(--border); text-ali
           </div>
           <div id="join-team-input" class="hidden">
             <label for="teamNumber">Team Number</label>
-            <select id="teamNumber" name="teamNumber"><option value="">Select a team to join...</option></select>
+            <select id="teamNumber" name="teamNumber">
+              <option value="">Select a team to join...</option>
+            </select>
             <p class="field-hint">Only teams with fewer than 5 players are shown.</p>
           </div>
           <div id="new-team-info">
             <p class="field-hint">You'll be assigned the next available team number (1&ndash;20).</p>
           </div>
         </div>
+
+        <!-- Payment -->
         <div class="payment-section">
           <div class="section-label">Payment &mdash; <span id="price-label">$15.00</span></div>
           <div id="card-container"></div>
           <div id="apple-pay-container"></div>
           <div id="payment-status"></div>
         </div>
+
         <button type="submit" class="btn-primary submit-btn" disabled id="submit-btn">Pay $15 &amp; Register</button>
         <p class="pay-notice">Complete payment to register. Your team assignment will be confirmed after payment.</p>
         <div id="form-status"></div>
       </form>
+
+      <!-- Roster Display -->
       <div id="roster-section" class="roster-section">
         <div class="section-label">Current Teams</div>
         <div id="roster"></div>
@@ -184,135 +123,41 @@ footer { background: var(--black); border-top: 1px solid var(--border); text-ali
     </div>
   </section>
 
+  <!-- ABOUT VIEW -->
   <section id="about" class="view">
     <div class="container">
       <div class="section-label">The Tournament</div>
       <h2>About Kicks for CHiPS</h2>
+
       <div class="about-text">
         <p>Kicks for CHiPS is an annual high school soccer tournament in Brooklyn dedicated to raising funds for CHiPS (Christian Help in Park Slope), a nonprofit serving the Gowanus community for over 50 years.</p>
         <p>Founded by three Saint Ann's students, the tournament brings together high schoolers across Brooklyn to compete in a 5v5 double-elimination bracket.</p>
       </div>
+
       <div class="prizes">
-        <div class="prize-card winners"><div class="prize-label">Winners Bracket</div><div class="prize-amount">$500</div><div class="prize-detail">Winning Team</div></div>
-        <div class="prize-card losers"><div class="prize-label">Losers Bracket</div><div class="prize-amount">$250</div><div class="prize-detail">Winning Team</div></div>
+        <div class="prize-card winners">
+          <div class="prize-label">Winners Bracket</div>
+          <div class="prize-amount">$500</div>
+          <div class="prize-detail">Winning Team</div>
+        </div>
+        <div class="prize-card losers">
+          <div class="prize-label">Losers Bracket</div>
+          <div class="prize-amount">$250</div>
+          <div class="prize-detail">Winning Team</div>
+        </div>
       </div>
-      <div class="about-footer"><p>All proceeds benefit CHiPS Brooklyn. Every dollar raised goes directly to providing groceries, hot meals, and housing support for those in need.</p></div>
+
+      <div class="about-footer">
+        <p>All proceeds benefit CHiPS Brooklyn. Every dollar raised goes directly to providing groceries, hot meals, and housing support for those in need.</p>
+      </div>
     </div>
   </section>
 
-  <footer><p>&copy; 2025 Kicks for CHiPS &nbsp;&middot;&nbsp; All proceeds benefit CHiPS Brooklyn</p></footer>
+  <!-- FOOTER -->
+  <footer>
+    <p>&copy; 2025 Kicks for CHiPS &nbsp;&middot;&nbsp; All proceeds benefit CHiPS Brooklyn</p>
+  </footer>
 
-  <script>
-const SQUARE_APP_ID = 'sq0idp-SIAb7Bit66sbtwCW5_soBA';
-const SQUARE_LOCATION_ID = 'LWZWSDG';
-const MAX_TEAMS = 20;
-const MAX_PLAYERS_PER_TEAM = 5;
-
-let teams = JSON.parse(localStorage.getItem('k4c_teams') || '[]');
-let teamMode = 'new';
-let regMode = 'individual';
-let card = null;
-let applePay = null;
-
-const tabs = document.querySelectorAll('.nav-tab');
-const views = document.querySelectorAll('.view');
-tabs.forEach(tab => { tab.addEventListener('click', () => { const t = tab.dataset.view; tabs.forEach(x => x.classList.remove('active')); tab.classList.add('active'); views.forEach(v => v.classList.toggle('active', v.id === t)); }); });
-
-const modeBtns = document.querySelectorAll('.mode-btn');
-const individualFields = document.getElementById('individual-fields');
-const teamFields = document.getElementById('team-fields');
-const teamAssignment = document.getElementById('team-assignment');
-const priceLabel = document.getElementById('price-label');
-const submitBtn = document.getElementById('submit-btn');
-
-modeBtns.forEach(btn => { btn.addEventListener('click', () => {
-  regMode = btn.dataset.regMode;
-  modeBtns.forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
-  if (regMode === 'team') { individualFields.classList.add('hidden'); teamFields.classList.remove('hidden'); teamAssignment.classList.add('hidden'); priceLabel.textContent = '$75.00'; submitBtn.textContent = 'Pay $75 & Register Team'; }
-  else { individualFields.classList.remove('hidden'); teamFields.classList.add('hidden'); teamAssignment.classList.remove('hidden'); priceLabel.textContent = '$15.00'; submitBtn.textContent = 'Pay $15 & Register'; }
-}); });
-
-const toggleBtns = document.querySelectorAll('.toggle-btn');
-const joinInput = document.getElementById('join-team-input');
-const newInfo = document.getElementById('new-team-info');
-toggleBtns.forEach(btn => { btn.addEventListener('click', () => { teamMode = btn.dataset.teamMode; toggleBtns.forEach(b => b.classList.remove('active')); btn.classList.add('active'); if (teamMode === 'join') { joinInput.classList.remove('hidden'); newInfo.classList.add('hidden'); populateTeamSelect(); } else { joinInput.classList.add('hidden'); newInfo.classList.remove('hidden'); } }); });
-
-function populateTeamSelect() {
-  const sel = document.getElementById('teamNumber');
-  sel.innerHTML = '<option value="">Select a team to join...</option>';
-  teams.forEach(t => { if (t.players.length < MAX_PLAYERS_PER_TEAM) { const o = document.createElement('option'); o.value = t.number; o.textContent = 'Team ' + t.number + ' (' + t.players.length + '/' + MAX_PLAYERS_PER_TEAM + ') — ' + t.players.map(p => p.firstName).join(', '); sel.appendChild(o); } });
-  if (sel.options.length === 1) { const o = document.createElement('option'); o.disabled = true; o.textContent = 'No teams available to join yet'; sel.appendChild(o); }
-}
-
-function renderRoster() {
-  const r = document.getElementById('roster');
-  if (teams.length === 0) { r.innerHTML = '<p class="no-teams">No teams registered yet. Be the first!</p>'; return; }
-  r.innerHTML = teams.map(t => { const full = t.players.length >= MAX_PLAYERS_PER_TEAM; return '<div class="team-card ' + (full ? 'full' : '') + '"><div class="team-card-header"><span class="team-number">Team ' + t.number + '</span><span class="team-count">' + t.players.length + '/' + MAX_PLAYERS_PER_TEAM + (full ? ' FULL' : '') + '</span></div><ul class="team-players">' + t.players.map(p => '<li>' + (p.lastName ? p.firstName + ' ' + p.lastName : p.firstName) + '</li>').join('') + '</ul></div>'; }).join('');
-}
-
-function saveTeams() { localStorage.setItem('k4c_teams', JSON.stringify(teams)); }
-function getNextTeamNumber() { if (teams.length >= MAX_TEAMS) return null; const used = new Set(teams.map(t => t.number)); for (let i = 1; i <= MAX_TEAMS; i++) { if (!used.has(i)) return i; } return null; }
-function getCurrentAmount() { return regMode === 'team' ? '75.00' : '15.00'; }
-
-async function initSquarePayment() {
-  const st = document.getElementById('payment-status');
-  try {
-    const payments = window.Square.payments(SQUARE_APP_ID, SQUARE_LOCATION_ID);
-    card = await payments.card(); await card.attach('#card-container');
-    try {
-      const pr = payments.paymentRequest({ countryCode: 'US', currencyCode: 'USD', total: { amount: getCurrentAmount(), label: 'K4C Registration' } });
-      applePay = await payments.applePay(pr);
-      const apc = document.getElementById('apple-pay-container');
-      const div = document.createElement('div'); div.className = 'pay-divider'; div.textContent = 'or';
-      apc.parentNode.insertBefore(div, apc);
-      await applePay.attach('#apple-pay-container');
-    } catch (e) { console.log('Apple Pay not available:', e.message || e); }
-    st.textContent = 'Payment ready.'; st.className = 'ready'; submitBtn.disabled = false;
-  } catch (e) { console.error('Square init error:', e); st.textContent = 'Could not load payment form. Please refresh.'; st.className = 'error'; }
-}
-
-function validateAndCollectPlayers() {
-  const f = document.getElementById('registration-form');
-  if (regMode === 'individual') { const fn = f.querySelector('#firstName').value.trim(), ln = f.querySelector('#lastName').value.trim(); if (!fn) { setStatus('Please enter your first name.', 'error'); f.querySelector('#firstName').focus(); return null; } return [{ firstName: fn, lastName: ln }]; }
-  const players = [];
-  for (let i = 1; i <= 5; i++) { const fn = f.querySelector('[name="teamFirst' + i + '"]').value.trim(), ln = f.querySelector('[name="teamLast' + i + '"]').value.trim(); if (!fn) { setStatus('Please enter a first name for Player ' + i + '.', 'error'); f.querySelector('[name="teamFirst' + i + '"]').focus(); return null; } players.push({ firstName: fn, lastName: ln }); }
-  return players;
-}
-
-function validateTeamTarget() {
-  if (regMode === 'team') { const n = getNextTeamNumber(); if (!n) { setStatus('All 20 teams are full.', 'error'); return null; } return { mode: 'new', number: n }; }
-  if (teamMode === 'join') { const s = document.getElementById('teamNumber').value; if (!s) { setStatus('Please select a team to join.', 'error'); return null; } const n = parseInt(s, 10), t = teams.find(x => x.number === n); if (!t || t.players.length >= MAX_PLAYERS_PER_TEAM) { setStatus('That team is full.', 'error'); return null; } return { mode: 'join', number: n }; }
-  const n = getNextTeamNumber(); if (!n) { setStatus('All 20 teams are full.', 'error'); return null; } return { mode: 'new', number: n };
-}
-
-function registerPlayers(players, target) {
-  if (target.mode === 'join') { teams.find(t => t.number === target.number).players.push(...players); }
-  else { teams.push({ number: target.number, players: players }); }
-  saveTeams(); renderRoster(); populateTeamSelect();
-}
-
-const form = document.getElementById('registration-form');
-const statusEl = document.getElementById('form-status');
-
-form.addEventListener('submit', async (e) => {
-  e.preventDefault();
-  const players = validateAndCollectPlayers(); if (!players) return;
-  const target = validateTeamTarget(); if (!target) return;
-  submitBtn.disabled = true; submitBtn.textContent = 'Processing...';
-  try {
-    const result = await card.tokenize();
-    if (result.status === 'OK') { registerPlayers(players, target); const lbl = 'Team ' + target.number; setStatus(regMode === 'team' ? 'Payment successful! Registered as ' + lbl + '.' : 'Payment successful! ' + players[0].firstName + ' registered to ' + lbl + '.', 'success'); form.reset(); modeBtns[0].click(); toggleBtns[0].click(); }
-    else { setStatus(result.errors ? result.errors.map(e => e.message).join(' ') : 'Payment failed.', 'error'); }
-  } catch (err) { console.error(err); setStatus('Payment error. Please try again.', 'error'); }
-  submitBtn.disabled = false; submitBtn.textContent = regMode === 'team' ? 'Pay $75 & Register Team' : 'Pay $15 & Register';
-});
-
-function setStatus(msg, type) { statusEl.textContent = msg; statusEl.className = type; }
-
-renderRoster();
-if (window.Square) { initSquarePayment(); }
-else { document.getElementById('payment-status').textContent = 'Loading payment form...'; const chk = setInterval(() => { if (window.Square) { clearInterval(chk); initSquarePayment(); } }, 500); }
-  </script>
+  <script src="script.js"></script>
 </body>
 </html>
