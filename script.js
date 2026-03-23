@@ -42,14 +42,14 @@ modeBtns.forEach(btn => {
       individualFields.classList.add('hidden');
       teamFields.classList.remove('hidden');
       teamAssignment.classList.add('hidden');
-      priceLabel.textContent = '$75.00';
-      submitBtn.textContent = 'Pay $75 & Register Team';
+      priceLabel.textContent = '$5.00';
+      submitBtn.textContent = 'Pay $5 & Register Team';
     } else {
       individualFields.classList.remove('hidden');
       teamFields.classList.add('hidden');
       teamAssignment.classList.remove('hidden');
-      priceLabel.textContent = '$15.00';
-      submitBtn.textContent = 'Pay $15 & Register';
+      priceLabel.textContent = '$1.00';
+      submitBtn.textContent = 'Pay $1 & Register';
     }
 
     updateApplePayAmount();
@@ -146,7 +146,7 @@ function getNextTeamNumber() {
 
 // ===== GET CURRENT AMOUNT =====
 function getCurrentAmount() {
-  return regMode === 'team' ? '75.00' : '15.00';
+  return regMode === 'team' ? '5.00' : '1.00';
 }
 
 // ===== UPDATE APPLE PAY AMOUNT =====
@@ -340,7 +340,7 @@ form.addEventListener('submit', async (e) => {
   }
 
   submitBtn.disabled = false;
-  submitBtn.textContent = regMode === 'team' ? 'Pay $75 & Register Team' : 'Pay $15 & Register';
+  submitBtn.textContent = regMode === 'team' ? 'Pay $5 & Register Team' : 'Pay $1 & Register';
 });
 
 function setStatus(msg, type) {
