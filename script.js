@@ -3,6 +3,7 @@ const CHECKOUT_INDIVIDUAL = 'https://checkout.square.site/merchant/MLC0HN2RN1CZH
 const CHECKOUT_TEAM = 'https://checkout.square.site/merchant/MLC0HN2RN1CZH/checkout/OBBAR7PSJSMQ76RBOCISYRJT?src=sheet';
 const MAX_TEAMS = 20;
 const MAX_PLAYERS_PER_TEAM = 5;
+const PENDING_EXPIRY_MS = 30 * 60 * 1000; // 30 minutes
 
 // ===== STATE =====
 let teams = JSON.parse(localStorage.getItem('k4c_teams') || '[]');
@@ -15,22 +16,22 @@ const urlParams = new URLSearchParams(window.location.search);
 const paidParam = urlParams.get('paid');
 
 if (paidParam && pendingReg) {
-  // They came back from Square — register them
-  registerPlayers(pendingReg.players, pendingReg.target);
+  // Verify pending data isn't stale (must be within 30 min)
+  const age = Date.now() - (pendingReg.timestamp || 0);
+  if (age < PENDING_EXPIRY_MS) {
+    // They came back from Square with ?paid= — register them
+    registerPlayers(pendingReg.players, pendingReg.target);
+  }
+  // Always clear pending after processing
   pendingReg = null;
   localStorage.removeItem('k4c_pending');
-
   // Clean up the URL
   window.history.replaceState({}, '', window.location.pathname);
-
-  // Show success after page loads
-  window.addEventListener('DOMContentLoaded', () => {
-    const statusEl = document.getElementById('form-status');
-    if (statusEl) {
-      statusEl.textContent = 'Payment confirmed! Registration complete.';
-      statusEl.className = 'success';
-    }
-  });
+} else if (!paidParam && pendingReg) {
+  // They came back WITHOUT ?paid= — they cancelled/X'd out
+  // Clear the pending registration so they can't cheat
+  pendingReg = null;
+  localStorage.removeItem('k4c_pending');
 }
 
 // ===== VIEW TOGGLING =====
@@ -254,14 +255,14 @@ form.addEventListener('submit', (e) => {
   const target = validateTeamTarget();
   if (!target) return;
 
-  // Save as pending — will be confirmed when they return from Square
+  // Save as pending with timestamp
   const currentRegMode = regMode;
-  pendingReg = { players, target, regMode: currentRegMode };
+  pendingReg = { players, target, regMode: currentRegMode, timestamp: Date.now() };
   localStorage.setItem('k4c_pending', JSON.stringify(pendingReg));
 
   setStatus('Redirecting to payment...', 'success');
 
-  // Redirect to Square checkout (same tab so they come back with ?paid=)
+  // Redirect to Square checkout
   const url = currentRegMode === 'team' ? CHECKOUT_TEAM : CHECKOUT_INDIVIDUAL;
   window.location.href = url;
 });
@@ -275,7 +276,7 @@ function setStatus(msg, type) {
 renderRoster();
 
 // Show success message if just returned from payment
-if (paidParam && !pendingReg) {
+if (paidParam) {
   const statusEl = document.getElementById('form-status');
   if (statusEl) {
     statusEl.textContent = 'Payment confirmed! Registration complete.';
