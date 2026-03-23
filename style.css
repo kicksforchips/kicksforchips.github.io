@@ -79,7 +79,7 @@ nav {
 .logo-img {
   max-width: clamp(200px, 40vw, 400px);
   height: auto;
-  filter: drop-shadow(0 0 20px rgba(255,255,255,0.15));
+  mix-blend-mode: screen;
 }
 
 #hero h1 {
