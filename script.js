@@ -190,8 +190,9 @@ async function initSquarePayment() {
       apContainer.parentNode.insertBefore(divider, apContainer);
       await applePay.attach('#apple-pay-container');
     } catch (apErr) {
-      // Apple Pay not available on this device/browser — that's fine
       console.log('Apple Pay not available:', apErr.message || apErr);
+      const apContainer = document.getElementById('apple-pay-container');
+      apContainer.innerHTML = '<p style="color:#f87171;font-size:13px;margin-top:8px;">Apple Pay: ' + (apErr.message || apErr) + '</p>';
     }
 
     statusEl.textContent = 'Payment ready.';
