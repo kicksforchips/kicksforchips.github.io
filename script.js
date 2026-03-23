@@ -33,6 +33,19 @@ async function supabaseInsert(rows) {
   return res.ok;
 }
 
+// ===== SEND SMS =====
+async function sendSMS(phone, playerName, teamNumber) {
+  try {
+    await fetch(`${SUPABASE_URL}/functions/v1/send-sms`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ to: phone, playerName, teamNumber }),
+    });
+  } catch (e) {
+    console.log('SMS send failed:', e);
+  }
+}
+
 // ===== STATE =====
 let teams = []; // built from DB rows
 let teamMode = 'new';
@@ -80,8 +93,13 @@ async function handlePaymentReturn() {
         await loadTeams();
         const statusEl = document.getElementById('form-status');
         if (statusEl) {
-          statusEl.textContent = 'Payment confirmed! Registration complete.';
+          statusEl.textContent = 'Payment confirmed! Registration complete. Check your phone for a confirmation text!';
           statusEl.className = 'success';
+        }
+        // Send SMS confirmation
+        if (pendingReg.phone) {
+          const name = pendingReg.players[0].firstName;
+          sendSMS(pendingReg.phone, name, pendingReg.target.number);
         }
       }
     }
@@ -166,14 +184,14 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Reload latest teams before validating
     await loadTeams();
 
-    const players = validateAndCollectPlayers();
-    if (!players) return;
+    const result = validateAndCollectPlayers();
+    if (!result) return;
 
     const target = validateTeamTarget();
     if (!target) return;
 
     // Save as pending with timestamp
-    const pendingReg = { players, target, regMode, timestamp: Date.now() };
+    const pendingReg = { players: result.players, phone: result.phone, target, regMode, timestamp: Date.now() };
     localStorage.setItem('k4c_pending', JSON.stringify(pendingReg));
 
     setStatus('Redirecting to payment...', 'success');
@@ -268,7 +286,13 @@ function validateAndCollectPlayers() {
       form.querySelector('#lastName').focus();
       return null;
     }
-    return [{ firstName, lastName }];
+    const phone = form.querySelector('#phone').value.trim();
+    if (!phone) {
+      setStatus('Please enter your phone number.', 'error');
+      form.querySelector('#phone').focus();
+      return null;
+    }
+    return { players: [{ firstName, lastName }], phone };
   }
 
   const players = [];
@@ -287,7 +311,13 @@ function validateAndCollectPlayers() {
     }
     players.push({ firstName: first, lastName: last });
   }
-  return players;
+  const phone = form.querySelector('#teamPhone').value.trim();
+  if (!phone) {
+    setStatus('Please enter your phone number.', 'error');
+    form.querySelector('#teamPhone').focus();
+    return null;
+  }
+  return { players, phone };
 }
 
 // ===== VALIDATE TEAM TARGET =====
