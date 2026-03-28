@@ -65,6 +65,9 @@ nav {
 .nav-tab:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
 .nav-tab.active { background: var(--white); color: var(--black); border-color: var(--white); }
 
+.donate-tab { background: #e63946; color: #fff !important; border-color: #e63946 !important; text-decoration: none; display: inline-flex; align-items: center; }
+.donate-tab:hover { background: #c1121f; border-color: #c1121f !important; color: #fff !important; }
+
 /* ===== HERO HEADER ===== */
 #hero { padding: 120px 24px 60px; text-align: center; }
 
