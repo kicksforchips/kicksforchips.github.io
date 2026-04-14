@@ -118,13 +118,27 @@ document.addEventListener('DOMContentLoaded', async () => {
   const views = document.querySelectorAll('.view');
 
   tabs.forEach(tab => {
-    tab.addEventListener('click', () => {
+    tab.addEventListener('click', (e) => {
+      if (tab.classList.contains('donate-tab')) return; // don't interfere with external link
       const target = tab.dataset.view;
+      if (!target) return;
       tabs.forEach(t => t.classList.remove('active'));
       tab.classList.add('active');
       views.forEach(v => v.classList.toggle('active', v.id === target));
     });
   });
+
+  // Nav logo click -> go to signup
+  const navLogo = document.querySelector('.nav-logo');
+  if (navLogo) {
+    navLogo.addEventListener('click', (e) => {
+      e.preventDefault();
+      tabs.forEach(t => t.classList.remove('active'));
+      const signupTab = document.querySelector('[data-view="signup"]');
+      if (signupTab) signupTab.classList.add('active');
+      views.forEach(v => v.classList.toggle('active', v.id === 'signup'));
+    });
+  }
 
   // ===== REGISTRATION MODE TOGGLE =====
   const modeBtns = document.querySelectorAll('.mode-btn');
