@@ -645,6 +645,11 @@ h2 {
   padding: 20px;
 }
 
+.sponsor-img[alt="Two Trees"] {
+  object-fit: contain;
+  object-position: center top;
+}
+
 .featured-sponsor .sponsor-blurb {
   font-size: 15px;
   color: #bbb;
