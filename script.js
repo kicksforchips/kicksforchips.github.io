@@ -143,12 +143,12 @@ document.addEventListener('DOMContentLoaded', async () => {
         individualFields.classList.add('hidden');
         teamFields.classList.remove('hidden');
         teamAssignment.classList.add('hidden');
-        submitBtn.textContent = 'Pay $75 & Register Team';
+        submitBtn.textContent = 'Pay $100 & Register Team';
       } else {
         individualFields.classList.remove('hidden');
         teamFields.classList.add('hidden');
         teamAssignment.classList.remove('hidden');
-        submitBtn.textContent = 'Pay $15 & Register';
+        submitBtn.textContent = 'Pay $20 & Register';
       }
     });
   });
