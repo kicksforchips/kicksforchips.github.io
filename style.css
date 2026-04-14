@@ -779,9 +779,10 @@ footer {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
-  nav { padding: 16px 20px; flex-direction: column; gap: 12px; }
-  .nav-tabs { width: 100%; }
-  .nav-tab { flex: 1; text-align: center; font-size: 11px; padding: 10px 12px; }
+  nav { padding: 0; flex-direction: column; gap: 0; height: auto; }
+  .nav-logo { height: 44px; align-self: flex-start; padding: 6px 12px; }
+  .nav-tabs { width: 100%; flex-wrap: wrap; gap: 4px; padding: 6px 8px; }
+  .nav-tab { flex: 0 0 auto; text-align: center; font-size: 10px; padding: 6px 10px; letter-spacing: 0.05em; }
   .team-toggle { flex-direction: column; }
   .reg-mode-toggle { flex-direction: column; }
   .player-row { grid-template-columns: 1fr; gap: 8px; }
