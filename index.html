@@ -69,7 +69,6 @@
           <div class="form-group">
             <label for="phone">Phone Number <span class="required">*</span></label>
             <input type="tel" id="phone" name="phone" placeholder="(555) 555-5555" required />
-            <p class="field-hint">We'll text you a confirmation with your team number.</p>
           </div>
         </div>
 
@@ -105,15 +104,15 @@
           <div class="form-group" style="margin-top:1rem;">
             <label for="teamPhone">Your Phone Number <span class="required">*</span></label>
             <input type="tel" id="teamPhone" name="teamPhone" placeholder="(555) 555-5555" />
-            <p class="field-hint">We'll text you a confirmation with your team number.</p>
           </div>
         </div>
 
         <!-- Team Assignment (individual mode only) -->
         <div id="team-assignment" class="team-section">
           <div class="section-label">Team Assignment</div>
+          <p class="field-hint" style="margin-bottom:0.75rem;">Choose one:</p>
           <div class="team-toggle">
-            <button type="button" class="toggle-btn active" data-team-mode="new">Create New Team</button>
+            <button type="button" class="toggle-btn" data-team-mode="new">Create New Team</button>
             <button type="button" class="toggle-btn" data-team-mode="join">Join Existing Team</button>
           </div>
           <div id="join-team-input" class="hidden">
@@ -123,7 +122,7 @@
             </select>
             <p class="field-hint">Only teams with fewer than 5 players are shown.</p>
           </div>
-          <div id="new-team-info">
+          <div id="new-team-info" class="hidden">
             <p class="field-hint">You'll be assigned the next available team number (1&ndash;20).</p>
           </div>
         </div>
@@ -319,6 +318,7 @@
 
   <!-- FOOTER -->
   <footer>
+    <a href="https://instagram.com/kicks_for_chips" target="_blank" style="color:#888;text-decoration:underline;font-size:14px;">@kicks_for_chips</a>
     <p>Made by Repin</p>
   </footer>
 

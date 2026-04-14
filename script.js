@@ -48,7 +48,7 @@ async function sendSMS(phone, playerName, teamNumber) {
 
 // ===== STATE =====
 let teams = []; // built from DB rows
-let teamMode = 'new';
+let teamMode = null;
 let regMode = 'individual';
 
 // ===== BUILD TEAMS FROM DB ROWS =====
@@ -355,6 +355,11 @@ function validateTeamTarget() {
       return null;
     }
     return { mode: 'new', number: num };
+  }
+
+  if (!teamMode) {
+    setStatus('Please select "Create New Team" or "Join Existing Team".', 'error');
+    return null;
   }
 
   if (teamMode === 'join') {
