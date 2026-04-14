@@ -141,11 +141,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       if (regMode === 'team') {
         individualFields.classList.add('hidden');
+        individualFields.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));
         teamFields.classList.remove('hidden');
         teamAssignment.classList.add('hidden');
         submitBtn.textContent = 'Pay $100 & Register Team';
       } else {
         individualFields.classList.remove('hidden');
+        individualFields.querySelector('#firstName').setAttribute('required', '');
+        individualFields.querySelector('#lastName').setAttribute('required', '');
+        individualFields.querySelector('#phone').setAttribute('required', '');
         teamFields.classList.add('hidden');
         teamAssignment.classList.remove('hidden');
         submitBtn.textContent = 'Pay $20 & Register';
