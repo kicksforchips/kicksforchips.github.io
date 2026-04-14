@@ -39,10 +39,13 @@ nav {
 }
 
 .nav-logo {
-  font-size: 20px;
-  font-weight: 900;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
+  display: flex;
+  align-items: center;
+}
+
+.nav-logo-img {
+  height: 24px;
+  width: auto;
 }
 
 .nav-tabs { display: flex; gap: 8px; }
@@ -80,7 +83,7 @@ nav {
 }
 
 .logo-img {
-  max-width: clamp(200px, 40vw, 400px);
+  max-width: clamp(280px, 55vw, 600px);
   height: auto;
   mix-blend-mode: screen;
 }
