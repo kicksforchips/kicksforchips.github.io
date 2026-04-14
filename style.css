@@ -20,6 +20,7 @@ body {
   font-family: 'Helvetica Neue', Arial, sans-serif;
   font-size: 16px;
   line-height: 1.6;
+  overflow-x: hidden;
 }
 
 a { color: inherit; text-decoration: none; }
@@ -815,23 +816,6 @@ h2 {
   object-fit: cover;
 }
 
-.about-gallery img:nth-child(4),
-.about-gallery img:nth-child(5) {
-  grid-column: span 1;
-}
-
-.about-gallery img:nth-child(3) {
-  grid-column: span 1;
-}
-
-/* First two images side by side, third full width */
-.signup-bottom-img {
-  width: 100%;
-  margin-top: 3rem;
-  border-radius: 8px;
-  object-fit: cover;
-  max-height: 400px;
-}
 
 /* ===== FOOTER ===== */
 footer.footer-photo {
@@ -862,4 +846,6 @@ footer.footer-photo img {
   .player-label { margin-bottom: 0; }
   #roster { grid-template-columns: 1fr; }
   .prizes { grid-template-columns: 1fr; }
+  .about-gallery { grid-template-columns: repeat(2, 1fr); }
+  .about-gallery img { height: 180px; }
 }
