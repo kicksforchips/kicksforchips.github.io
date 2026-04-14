@@ -73,6 +73,9 @@ nav {
 .donate-tab { background: #e63946; color: #fff !important; border-color: #e63946 !important; text-decoration: none; display: inline-flex; align-items: center; }
 .donate-tab:hover { background: #c1121f; border-color: #c1121f !important; color: #fff !important; }
 
+.tab-short { display: none; }
+.tab-full { display: inline; }
+
 /* ===== HERO HEADER ===== */
 #hero { padding: 120px 24px 60px; text-align: center; }
 
@@ -779,11 +782,13 @@ footer {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
-  nav { padding: 0 4px 0 0; flex-direction: row; gap: 0; height: 40px; }
+  nav { padding: 0 4px 0 0; flex-direction: row; gap: 0; height: 40px; align-items: center; }
   .nav-logo { height: 100%; flex-shrink: 0; padding: 0; }
   .nav-logo-img { height: 100%; }
-  .nav-tabs { flex: 1; flex-wrap: nowrap; gap: 2px; }
-  .nav-tab { flex: 1; text-align: center; font-size: 7px; padding: 4px 2px; letter-spacing: 0.02em; white-space: nowrap; border: none; }
+  .nav-tabs { flex: 1; flex-wrap: nowrap; gap: 3px; align-items: center; }
+  .nav-tab { flex: 1; text-align: center; font-size: 9px; padding: 6px 4px; letter-spacing: 0.02em; white-space: nowrap; border: none; }
+  .tab-full { display: none; }
+  .tab-short { display: inline; }
   .team-toggle { flex-direction: column; }
   .reg-mode-toggle { flex-direction: column; }
   .player-row { grid-template-columns: 1fr; gap: 8px; }
