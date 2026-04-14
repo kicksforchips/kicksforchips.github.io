@@ -834,13 +834,16 @@ h2 {
 }
 
 /* ===== FOOTER ===== */
-footer {
+footer.footer-photo {
+  padding: 0;
   background: var(--black);
-  border-top: 1px solid var(--border);
-  text-align: center;
-  padding: 32px 24px;
-  font-size: 13px;
-  color: var(--text-muted);
+}
+
+footer.footer-photo img {
+  width: 100%;
+  display: block;
+  max-height: 500px;
+  object-fit: cover;
 }
 
 /* ===== RESPONSIVE ===== */
