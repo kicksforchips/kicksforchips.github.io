@@ -639,6 +639,12 @@ h2 {
   margin-bottom: 16px;
 }
 
+.sponsor-img[alt="Warby Parker"] {
+  object-fit: contain;
+  background: #6BABE4;
+  padding: 20px;
+}
+
 .featured-sponsor .sponsor-blurb {
   font-size: 15px;
   color: #bbb;
