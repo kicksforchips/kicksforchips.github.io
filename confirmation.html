@@ -1,0 +1,378 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Registration Confirmed — Kicks for CHiPS</title>
+  <link rel="icon" type="image/x-icon" href="favicon.ico" />
+  <link rel="icon" type="image/png" sizes="32x32" href="favicon-32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png" />
+  <style>
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      background: #000;
+      color: #fff;
+      font-family: 'Helvetica Neue', Arial, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 20px;
+    }
+    .confirm-container {
+      max-width: 560px;
+      width: 100%;
+      text-align: center;
+    }
+    .confirm-logo {
+      max-width: 280px;
+      margin: 0 auto 2rem;
+    }
+    .confirm-check {
+      width: 80px;
+      height: 80px;
+      border-radius: 50%;
+      border: 3px solid #22c55e;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 1.5rem;
+    }
+    .confirm-check svg {
+      width: 40px;
+      height: 40px;
+      stroke: #22c55e;
+      fill: none;
+      stroke-width: 3;
+      stroke-linecap: round;
+      stroke-linejoin: round;
+    }
+    h1 {
+      font-size: 28px;
+      font-weight: 800;
+      letter-spacing: 0.05em;
+      margin-bottom: 0.5rem;
+    }
+    .team-number {
+      font-size: 18px;
+      color: #888;
+      margin-bottom: 2rem;
+    }
+    .team-number span {
+      color: #fff;
+      font-weight: 700;
+    }
+    .details-card {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .details-card h2 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #888;
+      margin-bottom: 1rem;
+    }
+    .detail-row {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 15px;
+    }
+    .detail-row:last-child { border-bottom: none; }
+    .detail-label { color: #888; }
+    .detail-value { font-weight: 600; }
+    .detail-value a { color: #fff; text-decoration: underline; }
+
+    .jersey-section {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .jersey-section h2 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #888;
+      margin-bottom: 0.5rem;
+    }
+    .jersey-section p {
+      font-size: 14px;
+      color: #888;
+      margin-bottom: 1rem;
+    }
+    .jersey-options {
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 12px;
+    }
+    .jersey-option {
+      background: #1a1a1a;
+      border: 2px solid rgba(255,255,255,0.1);
+      border-radius: 10px;
+      padding: 14px;
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.2s;
+      font-size: 14px;
+      font-weight: 600;
+    }
+    .jersey-option:hover { border-color: rgba(255,255,255,0.3); }
+    .jersey-option.selected { border-color: #fff; }
+    .jersey-option img {
+      width: 100%;
+      aspect-ratio: 1;
+      object-fit: cover;
+      border-radius: 6px;
+      margin-bottom: 8px;
+    }
+    .jersey-confirm-btn {
+      display: inline-block;
+      background: #fff;
+      color: #000;
+      border: none;
+      padding: 14px 32px;
+      border-radius: 8px;
+      font-size: 15px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 1rem;
+      width: 100%;
+    }
+    .jersey-confirm-btn:hover { opacity: 0.9; }
+    .jersey-confirm-btn:disabled { opacity: 0.4; cursor: not-allowed; }
+    .jersey-status { margin-top: 0.75rem; font-size: 14px; color: #22c55e; }
+
+    .players-list {
+      background: #111;
+      border: 1px solid rgba(255,255,255,0.12);
+      border-radius: 12px;
+      padding: 28px;
+      margin-bottom: 2rem;
+      text-align: left;
+    }
+    .players-list h2 {
+      font-size: 13px;
+      text-transform: uppercase;
+      letter-spacing: 0.15em;
+      color: #888;
+      margin-bottom: 1rem;
+    }
+    .player-item {
+      padding: 8px 0;
+      border-bottom: 1px solid rgba(255,255,255,0.08);
+      font-size: 15px;
+    }
+    .player-item:last-child { border-bottom: none; }
+
+    .back-link {
+      display: inline-block;
+      margin-top: 1rem;
+      color: #888;
+      text-decoration: underline;
+      font-size: 14px;
+    }
+    .back-link:hover { color: #fff; }
+
+    .no-access {
+      text-align: center;
+      color: #888;
+      font-size: 16px;
+    }
+    .no-access h1 { color: #fff; margin-bottom: 1rem; }
+    .no-access a { color: #fff; text-decoration: underline; }
+
+    @media (max-width: 500px) {
+      .jersey-options { grid-template-columns: 1fr 1fr; }
+      .detail-row { flex-direction: column; gap: 4px; }
+    }
+  </style>
+</head>
+<body>
+  <div class="confirm-container" id="main-content" style="display:none;">
+    <img src="logo.png" alt="Kicks for CHiPS" class="confirm-logo" />
+
+    <div class="confirm-check">
+      <svg viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12" /></svg>
+    </div>
+
+    <h1>You're In!</h1>
+    <div class="team-number" id="team-info"></div>
+
+    <div class="players-list" id="players-section" style="display:none;">
+      <h2>Your Team</h2>
+      <div id="players-list"></div>
+    </div>
+
+    <div class="details-card">
+      <h2>Event Details</h2>
+      <div class="detail-row">
+        <span class="detail-label">Date</span>
+        <span class="detail-value">Saturday, May 31, 2026</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Time</span>
+        <span class="detail-value">3:00 PM</span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Location</span>
+        <span class="detail-value"><a href="https://maps.google.com/?q=J.J.+Byrne+Playground+Brooklyn+NY" target="_blank">J.J. Byrne Playground, Brooklyn</a></span>
+      </div>
+      <div class="detail-row">
+        <span class="detail-label">Format</span>
+        <span class="detail-value">5v5 Double Elimination</span>
+      </div>
+    </div>
+
+    <div class="jersey-section">
+      <h2>Choose Your Jersey</h2>
+      <p>Select which sponsor jersey you'd like to wear on game day.</p>
+      <div class="jersey-options" id="jersey-options">
+        <div class="jersey-option" data-jersey="Vita Coco">
+          <img src="sponsors/vita-coco.webp" alt="Vita Coco" />
+          Vita Coco
+        </div>
+        <div class="jersey-option" data-jersey="Joe's Pizza">
+          <img src="sponsors/joes-pizza.webp" alt="Joe's Pizza" />
+          Joe's Pizza
+        </div>
+        <div class="jersey-option" data-jersey="Warby Parker">
+          <img src="sponsors/warby-parker.jpeg" alt="Warby Parker" />
+          Warby Parker
+        </div>
+        <div class="jersey-option" data-jersey="Two Trees">
+          <img src="sponsors/two-trees.webp" alt="Two Trees" />
+          Two Trees
+        </div>
+        <div class="jersey-option" data-jersey="Renatus Group">
+          <img src="sponsors/renatus.png" alt="Renatus Group" />
+          Renatus Group
+        </div>
+        <div class="jersey-option" data-jersey="Kinjo">
+          <img src="sponsors/kinjo.avif" alt="Kinjo" />
+          Kinjo
+        </div>
+        <div class="jersey-option" data-jersey="Txikito">
+          <img src="sponsors/txikito.webp" alt="Txikito" />
+          Txikito
+        </div>
+        <div class="jersey-option" data-jersey="Honey in the Raw">
+          <img src="sponsors/honey-raw.png" alt="Honey in the Raw" />
+          Honey in the Raw
+        </div>
+      </div>
+      <button class="jersey-confirm-btn" id="jersey-btn" disabled>Select a Jersey</button>
+      <div class="jersey-status" id="jersey-status"></div>
+    </div>
+
+    <a href="index.html" class="back-link">Back to Kicks for CHiPS</a>
+  </div>
+
+  <div class="confirm-container no-access" id="no-access" style="display:none;">
+    <h1>Nothing to see here</h1>
+    <p>This page is only available after completing registration.</p>
+    <a href="index.html">Go to Kicks for CHiPS</a>
+  </div>
+
+  <script>
+    const SUPABASE_URL = 'https://ivjaznyfqfifgyfnwbhg.supabase.co';
+    const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2amF6bnlmcWZpZmd5Zm53YmhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMzI0NjMsImV4cCI6MjA4OTgwODQ2M30.5wozfDagfVK7nYCdre5PPllVBa_DYDzRwHFWzTAXJpc';
+
+    const pendingReg = JSON.parse(localStorage.getItem('k4c_pending') || 'null');
+    const urlParams = new URLSearchParams(window.location.search);
+    const paidParam = urlParams.get('paid');
+
+    if (paidParam && pendingReg) {
+      document.getElementById('main-content').style.display = 'block';
+
+      // Show team info
+      document.getElementById('team-info').innerHTML =
+        'Team <span>' + pendingReg.target.number + '</span>';
+
+      // Show players
+      if (pendingReg.players && pendingReg.players.length > 0) {
+        document.getElementById('players-section').style.display = 'block';
+        const list = document.getElementById('players-list');
+        pendingReg.players.forEach(p => {
+          const div = document.createElement('div');
+          div.className = 'player-item';
+          div.textContent = p.lastName ? p.firstName + ' ' + p.lastName : p.firstName;
+          list.appendChild(div);
+        });
+      }
+
+      // Register in Supabase
+      const rows = pendingReg.players.map(p => ({
+        team_number: pendingReg.target.number,
+        first_name: p.firstName,
+        last_name: p.lastName || '',
+      }));
+
+      fetch(SUPABASE_URL + '/rest/v1/registrations', {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': 'Bearer ' + SUPABASE_KEY,
+          'Content-Type': 'application/json',
+          'Prefer': 'return=representation',
+        },
+        body: JSON.stringify(rows),
+      }).then(res => {
+        if (res.ok) {
+          console.log('Registration saved');
+        }
+      });
+
+      // Clear pending
+      localStorage.removeItem('k4c_pending');
+
+      // Jersey selection
+      let selectedJersey = null;
+      const options = document.querySelectorAll('.jersey-option');
+      const jerseyBtn = document.getElementById('jersey-btn');
+      const jerseyStatus = document.getElementById('jersey-status');
+
+      options.forEach(opt => {
+        opt.addEventListener('click', () => {
+          options.forEach(o => o.classList.remove('selected'));
+          opt.classList.add('selected');
+          selectedJersey = opt.dataset.jersey;
+          jerseyBtn.disabled = false;
+          jerseyBtn.textContent = 'Confirm: ' + selectedJersey;
+        });
+      });
+
+      jerseyBtn.addEventListener('click', async () => {
+        if (!selectedJersey) return;
+        jerseyBtn.disabled = true;
+        jerseyBtn.textContent = 'Saving...';
+
+        // Save jersey preference to localStorage (could also save to Supabase)
+        const prefs = JSON.parse(localStorage.getItem('k4c_jersey_prefs') || '[]');
+        prefs.push({
+          team: pendingReg.target.number,
+          players: pendingReg.players.map(p => p.firstName),
+          jersey: selectedJersey,
+          timestamp: Date.now(),
+        });
+        localStorage.setItem('k4c_jersey_prefs', JSON.stringify(prefs));
+
+        jerseyBtn.textContent = 'Saved!';
+        jerseyStatus.textContent = 'Jersey preference saved. See you on May 31st!';
+      });
+
+    } else {
+      document.getElementById('no-access').style.display = 'block';
+    }
+  </script>
+</body>
+</html>

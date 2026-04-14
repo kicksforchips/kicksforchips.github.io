@@ -224,6 +224,7 @@ document.addEventListener('DOMContentLoaded', async () => {
     // Redirect to Square checkout
     const url = regMode === 'team' ? CHECKOUT_TEAM : CHECKOUT_INDIVIDUAL;
     window.location.href = url;
+    // After payment, Square redirects to confirmation.html?paid=individual or ?paid=team
   });
 
   // ===== INIT =====
