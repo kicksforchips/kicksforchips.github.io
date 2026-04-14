@@ -32,19 +32,21 @@ nav {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding: 20px 48px;
+  padding: 0 48px 0 0;
   background: rgba(0,0,0,0.85);
   backdrop-filter: blur(12px);
   border-bottom: 1px solid var(--border);
+  height: 56px;
 }
 
 .nav-logo {
   display: flex;
   align-items: center;
+  height: 100%;
 }
 
 .nav-logo-img {
-  height: 28px;
+  height: 100%;
   width: auto;
 }
 
