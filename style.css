@@ -640,9 +640,8 @@ h2 {
 }
 
 .sponsor-img[alt="Warby Parker"] {
-  object-fit: contain;
-  background: #6BABE4;
-  padding: 20px;
+  object-fit: cover;
+  object-position: center top;
 }
 
 .sponsor-img[alt="Two Trees"] {
