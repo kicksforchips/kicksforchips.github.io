@@ -55,23 +55,23 @@ nav {
 .nav-tab {
   background: transparent;
   color: var(--text-muted);
-  border: 1px solid var(--border);
+  border: none;
   padding: 10px 22px;
   font-size: 13px;
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
   cursor: pointer;
-  border-radius: 2px;
+  border-radius: 20px;
   transition: all 0.2s;
   font-family: inherit;
 }
 
-.nav-tab:hover { color: var(--white); border-color: rgba(255,255,255,0.3); }
-.nav-tab.active { background: var(--white); color: var(--black); border-color: var(--white); }
+.nav-tab:hover { color: var(--white); background: rgba(255,255,255,0.08); }
+.nav-tab.active { background: var(--white); color: var(--black); }
 
-.donate-tab { background: #e63946; color: #fff !important; border-color: #e63946 !important; text-decoration: none; display: inline-flex; align-items: center; }
-.donate-tab:hover { background: #c1121f; border-color: #c1121f !important; color: #fff !important; }
+.donate-tab { background: #e63946; color: #fff !important; text-decoration: none; display: inline-flex; align-items: center; }
+.donate-tab:hover { background: #c1121f; color: #fff !important; }
 
 .tab-short { display: none; }
 .tab-full { display: inline; }
@@ -786,7 +786,7 @@ footer {
   .nav-logo { height: 36px; padding: 4px 8px; }
   .nav-logo-img { height: 100%; }
   .nav-tabs { display: flex; flex-wrap: nowrap; gap: 0; width: 100%; }
-  .nav-tab { flex: 1 1 0; min-width: 0; text-align: center; font-size: 9px; padding: 8px 0; letter-spacing: 0.02em; white-space: nowrap; border: none; border-radius: 0; }
+  .nav-tab { flex: 1 1 0; min-width: 0; text-align: center; font-size: 9px; padding: 8px 2px; letter-spacing: 0.02em; white-space: nowrap; border: none; border-radius: 16px; overflow: hidden; }
   .tab-full { display: none !important; }
   .tab-short { display: inline !important; }
   .team-toggle { flex-direction: column; }
