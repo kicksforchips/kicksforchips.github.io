@@ -378,7 +378,8 @@
 
         if (res.ok) {
           jerseyBtn.textContent = 'Saved!';
-          jerseyStatus.textContent = 'Jersey preference saved. See you on May 31st!';
+          jerseyStatus.textContent = 'Jersey preference saved. Redirecting...';
+          setTimeout(() => { window.location.href = 'https://kicksforchips.com'; }, 1500);
         } else {
           jerseyBtn.textContent = 'Error — try again';
           jerseyBtn.disabled = false;
