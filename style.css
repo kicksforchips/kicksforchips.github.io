@@ -50,6 +50,15 @@ nav {
   width: auto;
 }
 
+.nav-ig {
+  display: flex;
+  align-items: center;
+  color: #888;
+  margin-left: 12px;
+  transition: color 0.2s;
+}
+.nav-ig:hover { color: #fff; }
+
 .nav-tabs { display: flex; gap: 8px; }
 
 .nav-tab {
