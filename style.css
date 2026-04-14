@@ -782,13 +782,13 @@ footer {
 
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
-  nav { padding: 0 4px 0 0; flex-direction: row; gap: 0; height: 40px; align-items: center; }
-  .nav-logo { height: 100%; flex-shrink: 0; padding: 0; }
+  nav { padding: 0; flex-wrap: nowrap; height: auto; gap: 0; flex-direction: column; align-items: stretch; }
+  .nav-logo { height: 36px; padding: 4px 8px; }
   .nav-logo-img { height: 100%; }
-  .nav-tabs { flex: 1; flex-wrap: nowrap; gap: 3px; align-items: center; }
-  .nav-tab { flex: 1; text-align: center; font-size: 9px; padding: 6px 4px; letter-spacing: 0.02em; white-space: nowrap; border: none; }
-  .tab-full { display: none; }
-  .tab-short { display: inline; }
+  .nav-tabs { display: flex; flex-wrap: nowrap; gap: 0; width: 100%; }
+  .nav-tab { flex: 1 1 0; min-width: 0; text-align: center; font-size: 9px; padding: 8px 0; letter-spacing: 0.02em; white-space: nowrap; border: none; border-radius: 0; }
+  .tab-full { display: none !important; }
+  .tab-short { display: inline !important; }
   .team-toggle { flex-direction: column; }
   .reg-mode-toggle { flex-direction: column; }
   .player-row { grid-template-columns: 1fr; gap: 8px; }
