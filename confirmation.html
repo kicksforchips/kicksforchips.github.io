@@ -356,18 +356,29 @@
         jerseyBtn.disabled = true;
         jerseyBtn.textContent = 'Saving...';
 
-        // Save jersey preference to localStorage (could also save to Supabase)
-        const prefs = JSON.parse(localStorage.getItem('k4c_jersey_prefs') || '[]');
-        prefs.push({
-          team: pendingReg.target.number,
-          players: pendingReg.players.map(p => p.firstName),
+        const rows = pendingReg.players.map(p => ({
+          team_number: pendingReg.target.number,
+          player_name: (p.firstName + ' ' + (p.lastName || '')).trim(),
           jersey: selectedJersey,
-          timestamp: Date.now(),
-        });
-        localStorage.setItem('k4c_jersey_prefs', JSON.stringify(prefs));
+        }));
 
-        jerseyBtn.textContent = 'Saved!';
-        jerseyStatus.textContent = 'Jersey preference saved. See you on May 31st!';
+        const res = await fetch(SUPABASE_URL + '/rest/v1/jersey_preferences', {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(rows),
+        });
+
+        if (res.ok) {
+          jerseyBtn.textContent = 'Saved!';
+          jerseyStatus.textContent = 'Jersey preference saved. See you on May 31st!';
+        } else {
+          jerseyBtn.textContent = 'Error — try again';
+          jerseyBtn.disabled = false;
+        }
       });
 
     } else {
