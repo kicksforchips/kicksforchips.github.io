@@ -70,7 +70,7 @@ nav {
 .nav-tab:hover { color: var(--white); background: rgba(255,255,255,0.08); }
 .nav-tab.active { background: var(--white); color: var(--black); }
 
-.donate-tab { background: #e63946; color: #fff !important; text-decoration: none; display: inline-flex; align-items: center; }
+.donate-tab { background: #e63946; color: #fff !important; text-decoration: none; display: flex; align-items: center; justify-content: center; }
 .donate-tab:hover { background: #c1121f; color: #fff !important; }
 
 .tab-short { display: none; }
@@ -786,7 +786,7 @@ footer {
   .nav-logo { height: 36px; padding: 4px 8px; }
   .nav-logo-img { height: 100%; }
   .nav-tabs { display: flex; flex-wrap: nowrap; gap: 0; width: 100%; }
-  .nav-tab { flex: 1 1 0; min-width: 0; text-align: center; font-size: 9px; padding: 8px 2px; letter-spacing: 0.02em; white-space: nowrap; border: none; border-radius: 16px; overflow: hidden; }
+  .nav-tab { flex: 1 1 0 !important; min-width: 0; text-align: center; font-size: 9px; padding: 8px 2px; letter-spacing: 0.02em; white-space: nowrap; border: none !important; border-radius: 16px !important; overflow: hidden; display: flex !important; align-items: center; justify-content: center; }
   .tab-full { display: none !important; }
   .tab-short { display: inline !important; }
   .team-toggle { flex-direction: column; }
