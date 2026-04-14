@@ -50,14 +50,20 @@ nav {
   width: auto;
 }
 
+.nav-left {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  gap: 8px;
+}
+
 .nav-ig {
   display: flex;
   align-items: center;
-  color: #888;
-  margin-left: 12px;
-  transition: color 0.2s;
+  color: #fff;
+  transition: opacity 0.2s;
 }
-.nav-ig:hover { color: #fff; }
+.nav-ig:hover { opacity: 0.7; }
 
 .nav-tabs { display: flex; gap: 8px; }
 
@@ -806,7 +812,8 @@ footer {
 /* ===== RESPONSIVE ===== */
 @media (max-width: 600px) {
   nav { padding: 0; flex-wrap: nowrap; height: auto; gap: 0; flex-direction: column; align-items: stretch; }
-  .nav-logo { height: 36px; padding: 4px 8px; }
+  .nav-left { height: 36px; padding: 4px 8px; gap: 6px; }
+  .nav-logo { height: 100%; padding: 0; }
   .nav-logo-img { height: 100%; }
   .nav-tabs { display: flex; flex-wrap: nowrap; gap: 0; width: 100%; }
   .nav-tab { flex: 1 1 0 !important; min-width: 0; text-align: center; font-size: 9px; padding: 8px 2px; letter-spacing: 0.02em; white-space: nowrap; border: none !important; border-radius: 16px !important; overflow: hidden; display: flex !important; align-items: center; justify-content: center; }
