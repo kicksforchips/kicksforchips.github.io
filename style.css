@@ -818,16 +818,12 @@ h2 {
 
 
 /* ===== FOOTER ===== */
-footer.footer-photo {
-  padding: 0;
-  background: var(--black);
-}
-
-footer.footer-photo img {
-  width: 100%;
-  display: block;
-  max-height: 500px;
-  object-fit: cover;
+footer {
+  text-align: center;
+  padding: 2rem 1rem;
+  color: var(--text-muted);
+  font-size: 13px;
+  border-top: 1px solid var(--border);
 }
 
 /* ===== RESPONSIVE ===== */

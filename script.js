@@ -76,38 +76,9 @@ const urlParams = new URLSearchParams(window.location.search);
 const paidParam = urlParams.get('paid');
 
 async function handlePaymentReturn() {
-  const pendingReg = JSON.parse(localStorage.getItem('k4c_pending') || 'null');
-
-  if (paidParam && pendingReg) {
-    const age = Date.now() - (pendingReg.timestamp || 0);
-    if (age < PENDING_EXPIRY_MS) {
-      // Build rows for Supabase
-      const rows = pendingReg.players.map(p => ({
-        team_number: pendingReg.target.number,
-        first_name: p.firstName,
-        last_name: p.lastName || '',
-      }));
-
-      const success = await supabaseInsert(rows);
-      if (success) {
-        await loadTeams();
-        const statusEl = document.getElementById('form-status');
-        if (statusEl) {
-          statusEl.textContent = 'Payment confirmed! Registration complete. Check your phone for a confirmation text!';
-          statusEl.className = 'success';
-        }
-        // Send SMS confirmation
-        if (pendingReg.phone) {
-          const name = pendingReg.players[0].firstName;
-          sendSMS(pendingReg.phone, name, pendingReg.target.number);
-        }
-      }
-    }
-    // Clear pending
-    localStorage.removeItem('k4c_pending');
-    window.history.replaceState({}, '', window.location.pathname);
-  } else if (!paidParam && localStorage.getItem('k4c_pending')) {
-    // Came back without ?paid= — they cancelled
+  // Registration is handled by confirmation.html now.
+  // This just cleans up stale pending data on the main page.
+  if (!paidParam && localStorage.getItem('k4c_pending')) {
     localStorage.removeItem('k4c_pending');
   }
 }
