@@ -9,7 +9,8 @@ const PENDING_EXPIRY_MS = 30 * 60 * 1000;
 
 // ===== SUPABASE HELPERS =====
 async function supabaseGet() {
-  const res = await fetch(`${SUPABASE_URL}/rest/v1/registrations?select=*&order=created_at.asc`, {
+  // Only return paid registrations for the public roster
+  const res = await fetch(`${SUPABASE_URL}/rest/v1/registrations?select=*&paid=eq.true&order=created_at.asc`, {
     headers: {
       'apikey': SUPABASE_KEY,
       'Authorization': `Bearer ${SUPABASE_KEY}`,
@@ -30,7 +31,8 @@ async function supabaseInsert(rows) {
     },
     body: JSON.stringify(rows),
   });
-  return res.ok;
+  if (!res.ok) return null;
+  return res.json();
 }
 
 // ===== SEND SMS =====
@@ -186,8 +188,34 @@ document.addEventListener('DOMContentLoaded', async () => {
     const target = validateTeamTarget();
     if (!target) return;
 
-    // Save as pending with timestamp
-    const pendingReg = { players: result.players, phone: result.phone, target, regMode, timestamp: Date.now() };
+    setStatus('Saving your registration...', 'success');
+
+    // Insert rows NOW with paid=false so we have a record even if checkout is abandoned
+    const rowsToInsert = result.players.map(p => ({
+      team_number: target.number,
+      first_name: p.firstName,
+      last_name: p.lastName || '',
+      phone: result.phone,
+      paid: false,
+    }));
+
+    const inserted = await supabaseInsert(rowsToInsert);
+    if (!inserted) {
+      setStatus('Could not save registration. Please try again.', 'error');
+      return;
+    }
+
+    const insertedIds = inserted.map(r => r.id);
+
+    // Save as pending with timestamp + inserted IDs so confirmation.html can flip paid=true
+    const pendingReg = {
+      players: result.players,
+      phone: result.phone,
+      target,
+      regMode,
+      timestamp: Date.now(),
+      ids: insertedIds,
+    };
     localStorage.setItem('k4c_pending', JSON.stringify(pendingReg));
 
     setStatus('Redirecting to payment...', 'success');

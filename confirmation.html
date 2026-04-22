@@ -314,27 +314,41 @@
         });
       }
 
-      // Register in Supabase
-      const rows = pendingReg.players.map(p => ({
-        team_number: pendingReg.target.number,
-        first_name: p.firstName,
-        last_name: p.lastName || '',
-      }));
-
-      fetch(SUPABASE_URL + '/rest/v1/registrations', {
-        method: 'POST',
-        headers: {
-          'apikey': SUPABASE_KEY,
-          'Authorization': 'Bearer ' + SUPABASE_KEY,
-          'Content-Type': 'application/json',
-          'Prefer': 'return=representation',
-        },
-        body: JSON.stringify(rows),
-      }).then(res => {
-        if (res.ok) {
-          console.log('Registration saved');
-        }
-      });
+      // Flip registration rows to paid=true (they were inserted pre-payment)
+      if (pendingReg.ids && pendingReg.ids.length > 0) {
+        const idList = pendingReg.ids.join(',');
+        fetch(SUPABASE_URL + '/rest/v1/registrations?id=in.(' + idList + ')', {
+          method: 'PATCH',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ paid: true }),
+        }).then(res => {
+          if (res.ok) {
+            console.log('Registration marked paid');
+          }
+        });
+      } else {
+        // Fallback for legacy pending data (no ids stored) — insert as paid=true
+        const rows = pendingReg.players.map(p => ({
+          team_number: pendingReg.target.number,
+          first_name: p.firstName,
+          last_name: p.lastName || '',
+          phone: pendingReg.phone || '',
+          paid: true,
+        }));
+        fetch(SUPABASE_URL + '/rest/v1/registrations', {
+          method: 'POST',
+          headers: {
+            'apikey': SUPABASE_KEY,
+            'Authorization': 'Bearer ' + SUPABASE_KEY,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(rows),
+        });
+      }
 
       // Clear pending
       localStorage.removeItem('k4c_pending');
