@@ -211,6 +211,7 @@
 
     <h1>You're In!</h1>
     <div class="team-number" id="team-info"></div>
+    <div id="sync-status" style="display:none; margin: -1rem auto 2rem; max-width: 500px; padding: 12px 16px; border-radius: 8px; font-size: 14px;"></div>
 
     <div class="players-list" id="players-section" style="display:none;">
       <h2>Your Team</h2>
@@ -314,10 +315,21 @@
         });
       }
 
+      // Show sync status helper
+      const syncEl = document.getElementById('sync-status');
+      function showSyncError(msg) {
+        syncEl.style.display = 'block';
+        syncEl.style.background = '#3a1a1a';
+        syncEl.style.border = '1px solid #ef4444';
+        syncEl.style.color = '#fca5a5';
+        syncEl.innerHTML = msg;
+      }
+
       // Flip registration rows to paid=true (they were inserted pre-payment)
+      let syncPromise;
       if (pendingReg.ids && pendingReg.ids.length > 0) {
         const idList = pendingReg.ids.join(',');
-        fetch(SUPABASE_URL + '/rest/v1/registrations?id=in.(' + idList + ')', {
+        syncPromise = fetch(SUPABASE_URL + '/rest/v1/registrations?id=in.(' + idList + ')', {
           method: 'PATCH',
           headers: {
             'apikey': SUPABASE_KEY,
@@ -325,10 +337,6 @@
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({ paid: true }),
-        }).then(res => {
-          if (res.ok) {
-            console.log('Registration marked paid');
-          }
         });
       } else {
         // Fallback for legacy pending data (no ids stored) — insert as paid=true
@@ -339,7 +347,7 @@
           phone: pendingReg.phone || '',
           paid: true,
         }));
-        fetch(SUPABASE_URL + '/rest/v1/registrations', {
+        syncPromise = fetch(SUPABASE_URL + '/rest/v1/registrations', {
           method: 'POST',
           headers: {
             'apikey': SUPABASE_KEY,
@@ -350,8 +358,24 @@
         });
       }
 
-      // Clear pending
-      localStorage.removeItem('k4c_pending');
+      syncPromise
+        .then(res => {
+          if (res.ok) {
+            // Only clear pending data if sync succeeded
+            localStorage.removeItem('k4c_pending');
+          } else {
+            showSyncError(
+              '⚠️ Your payment went through, but we could not sync your registration. ' +
+              'Please email <a href="mailto:info@kicksforchips.com" style="color:#fff; text-decoration:underline;">info@kicksforchips.com</a> with your name so we can add you manually.'
+            );
+          }
+        })
+        .catch(() => {
+          showSyncError(
+            '⚠️ Your payment went through, but we could not reach our server. ' +
+            'Please email <a href="mailto:info@kicksforchips.com" style="color:#fff; text-decoration:underline;">info@kicksforchips.com</a> with your name so we can add you manually.'
+          );
+        });
 
       // Jersey selection
       let selectedJersey = null;

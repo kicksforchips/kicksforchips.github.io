@@ -5,7 +5,6 @@ const CHECKOUT_INDIVIDUAL = 'https://checkout.square.site/merchant/MLC0HN2RN1CZH
 const CHECKOUT_TEAM = 'https://checkout.square.site/merchant/MLC0HN2RN1CZH/checkout/OBBAR7PSJSMQ76RBOCISYRJT?src=sheet';
 const MAX_TEAMS = 20;
 const MAX_PLAYERS_PER_TEAM = 5;
-const PENDING_EXPIRY_MS = 30 * 60 * 1000;
 
 // ===== SUPABASE HELPERS =====
 async function supabaseGet() {
@@ -35,19 +34,6 @@ async function supabaseInsert(rows) {
   return res.json();
 }
 
-// ===== SEND SMS =====
-async function sendSMS(phone, playerName, teamNumber) {
-  try {
-    await fetch(`${SUPABASE_URL}/functions/v1/send-sms`, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ to: phone, playerName, teamNumber }),
-    });
-  } catch (e) {
-    console.log('SMS send failed:', e);
-  }
-}
-
 // ===== STATE =====
 let teams = []; // built from DB rows
 let teamMode = null;
@@ -73,16 +59,11 @@ async function loadTeams() {
   populateTeamSelect();
 }
 
-// ===== CHECK FOR PAYMENT RETURN =====
-const urlParams = new URLSearchParams(window.location.search);
-const paidParam = urlParams.get('paid');
-
-async function handlePaymentReturn() {
-  // Registration is handled by confirmation.html now.
-  // This just cleans up stale pending data on the main page.
-  if (!paidParam && localStorage.getItem('k4c_pending')) {
-    localStorage.removeItem('k4c_pending');
-  }
+// ===== CLEAR STALE PENDING DATA ON LOAD =====
+// If user returned to the main page without going through confirmation.html,
+// the pending data is stale (they abandoned or cancelled checkout).
+if (!window.location.search.includes('paid=') && localStorage.getItem('k4c_pending')) {
+  localStorage.removeItem('k4c_pending');
 }
 
 // ===== VIEW TOGGLING =====
@@ -227,7 +208,6 @@ document.addEventListener('DOMContentLoaded', async () => {
   });
 
   // ===== INIT =====
-  await handlePaymentReturn();
   await loadTeams();
 });
 
@@ -255,6 +235,17 @@ function populateTeamSelect() {
   }
 }
 
+// ===== ESCAPE HTML =====
+function escapeHtml(str) {
+  if (str == null) return '';
+  return String(str)
+    .replace(/&/g, '&amp;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, '&#39;');
+}
+
 // ===== RENDER ROSTER =====
 function renderRoster() {
   const roster = document.getElementById('roster');
@@ -276,7 +267,7 @@ function renderRoster() {
         <ul class="team-players">
           ${team.players.map(p => {
             const name = p.lastName ? `${p.firstName} ${p.lastName}` : p.firstName;
-            return `<li>${name}</li>`;
+            return `<li>${escapeHtml(name)}</li>`;
           }).join('')}
         </ul>
       </div>
