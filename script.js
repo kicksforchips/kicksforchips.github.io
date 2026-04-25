@@ -381,5 +381,7 @@ function setStatus(msg, type) {
   if (statusEl) {
     statusEl.textContent = msg;
     statusEl.className = type;
+    // Scroll error/success message into view so user actually sees it
+    statusEl.scrollIntoView({ behavior: 'smooth', block: 'center' });
   }
 }

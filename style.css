@@ -365,15 +365,38 @@ h2 {
 .submit-btn:disabled { opacity: 0.35; cursor: not-allowed; }
 
 #form-status {
-  margin-top: 16px;
-  font-size: 14px;
+  margin: 0 0 16px 0;
+  font-size: 15px;
+  font-weight: 600;
   color: var(--text-muted);
   text-align: center;
-  min-height: 20px;
+  padding: 0;
+  border-radius: 8px;
+  transition: padding 0.15s, background 0.15s;
 }
 
-#form-status.success { color: #4ade80; }
-#form-status.error { color: #f87171; }
+#form-status:empty { display: none; }
+
+#form-status.success {
+  color: #4ade80;
+  background: rgba(74, 222, 128, 0.1);
+  border: 1px solid rgba(74, 222, 128, 0.3);
+  padding: 14px 16px;
+}
+
+#form-status.error {
+  color: #fca5a5;
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  padding: 14px 16px;
+  animation: shake 0.4s;
+}
+
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
 
 /* ===== ROSTER ===== */
 .roster-section {
