@@ -103,25 +103,26 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   modeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      regMode = btn.dataset.regMode;
+      const mode = btn.dataset.regMode;
+
+      // Whole-team registration creates a new team — closed because
+      // all 16 teams are now full. Force user back to individual mode.
+      if (mode === 'team') {
+        setStatus('All 16 teams are full. Please register as an individual and join an existing team.', 'error');
+        return;
+      }
+
+      regMode = mode;
       modeBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      if (regMode === 'team') {
-        individualFields.classList.add('hidden');
-        individualFields.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));
-        teamFields.classList.remove('hidden');
-        teamAssignment.classList.add('hidden');
-        submitBtn.textContent = 'Pay $100 & Register Team';
-      } else {
-        individualFields.classList.remove('hidden');
-        individualFields.querySelector('#firstName').setAttribute('required', '');
-        individualFields.querySelector('#lastName').setAttribute('required', '');
-        individualFields.querySelector('#phone').setAttribute('required', '');
-        teamFields.classList.add('hidden');
-        teamAssignment.classList.remove('hidden');
-        submitBtn.textContent = 'Pay $20 & Register';
-      }
+      individualFields.classList.remove('hidden');
+      individualFields.querySelector('#firstName').setAttribute('required', '');
+      individualFields.querySelector('#lastName').setAttribute('required', '');
+      individualFields.querySelector('#phone').setAttribute('required', '');
+      teamFields.classList.add('hidden');
+      teamAssignment.classList.remove('hidden');
+      submitBtn.textContent = 'Pay $20 & Register';
     });
   });
 
@@ -132,18 +133,21 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   toggleBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      teamMode = btn.dataset.teamMode;
+      const mode = btn.dataset.teamMode;
+
+      // New-team creation is closed — all 16 teams are spoken for.
+      if (mode === 'new') {
+        setStatus('All 16 teams are full. Please join an existing team instead.', 'error');
+        return;
+      }
+
+      teamMode = mode;
       toggleBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      if (teamMode === 'join') {
-        joinInput.classList.remove('hidden');
-        newInfo.classList.add('hidden');
-        populateTeamSelect();
-      } else {
-        joinInput.classList.add('hidden');
-        newInfo.classList.remove('hidden');
-      }
+      joinInput.classList.remove('hidden');
+      newInfo.classList.add('hidden');
+      populateTeamSelect();
     });
   });
 
@@ -338,17 +342,14 @@ function validateAndCollectPlayers() {
 
 // ===== VALIDATE TEAM TARGET =====
 function validateTeamTarget() {
-  if (regMode === 'team') {
-    const num = getNextTeamNumber();
-    if (num === null) {
-      setStatus('All 20 teams are full. Registration is closed.', 'error');
-      return null;
-    }
-    return { mode: 'new', number: num };
+  // New-team creation is closed — all 16 teams are full.
+  if (regMode === 'team' || teamMode === 'new') {
+    setStatus('All 16 teams are full. Please join an existing team instead.', 'error');
+    return null;
   }
 
   if (!teamMode) {
-    setStatus('Please select "Create New Team" or "Join Existing Team".', 'error');
+    setStatus('Please select an existing team to join.', 'error');
     return null;
   }
 
@@ -367,12 +368,8 @@ function validateTeamTarget() {
     return { mode: 'join', number: num };
   }
 
-  const num = getNextTeamNumber();
-  if (num === null) {
-    setStatus('All 20 teams are full. Registration is closed.', 'error');
-    return null;
-  }
-  return { mode: 'new', number: num };
+  setStatus('Please select an existing team to join.', 'error');
+  return null;
 }
 
 // ===== STATUS =====
