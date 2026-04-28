@@ -57,8 +57,13 @@
       <!-- Registration Mode Toggle -->
       <div class="reg-mode-toggle">
         <button type="button" class="mode-btn active" data-reg-mode="individual">Register Myself &mdash; $20</button>
-        <button type="button" class="mode-btn" data-reg-mode="team">Register Whole Team &mdash; $100</button>
+        <button type="button" class="mode-btn" data-reg-mode="waitlist">Join Waitlist &mdash; Free</button>
       </div>
+
+      <!-- Waitlist Banner -->
+      <p id="waitlist-banner" class="hidden" style="margin: 0 0 1.5rem 0; padding: 14px 16px; background: rgba(74, 222, 128, 0.08); border: 1px solid rgba(74, 222, 128, 0.3); border-radius: 8px; color: #d4f5e0; font-size: 14px; line-height: 1.5;">
+        We've reached capacity at 16 teams. Sign up your full 5-player team below to join the waitlist &mdash; we'll text you if a spot opens.
+      </p>
 
       <form id="registration-form">
         <!-- Individual: Your Info -->
@@ -115,10 +120,10 @@
         <!-- Team Assignment (individual mode only) -->
         <div id="team-assignment" class="team-section">
           <div class="section-label">Team Assignment</div>
-          <p class="field-hint" style="margin-bottom:0.75rem;">If someone you know has already signed up, join their team instead of creating a new one.</p>
+          <p class="field-hint" style="margin-bottom:0.75rem;">Join an existing team with open spots, or join the waitlist with 5 players.</p>
           <div class="team-toggle">
-            <button type="button" class="toggle-btn" data-team-mode="new">Create New Team</button>
             <button type="button" class="toggle-btn" data-team-mode="join">Join Existing Team</button>
+            <button type="button" class="toggle-btn" data-team-mode="waitlist">Join Waitlist</button>
           </div>
           <div id="join-team-input" class="hidden">
             <label for="teamNumber">Team Number</label>
@@ -133,7 +138,7 @@
         </div>
 
         <!-- Payment -->
-        <div class="payment-section">
+        <div class="payment-section" id="payment-section">
           <div class="section-label">Payment</div>
           <p class="pay-info">You'll be redirected to Square's secure checkout. Apple Pay, Google Pay, and card payments are all accepted.</p>
         </div>
