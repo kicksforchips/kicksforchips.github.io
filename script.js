@@ -108,7 +108,7 @@ document.addEventListener('DOMContentLoaded', async () => {
       // Whole-team registration creates a new team — closed because
       // all 16 teams are now full. Force user back to individual mode.
       if (mode === 'team') {
-        setStatus('We have reached capacity at 16 teams. Please join an existing team instead.', 'error');
+        setStatus('All 16 teams are full. Please register as an individual and join an existing team.', 'error');
         return;
       }
 
@@ -137,7 +137,7 @@ document.addEventListener('DOMContentLoaded', async () => {
 
       // New-team creation is closed — all 16 teams are spoken for.
       if (mode === 'new') {
-        setStatus('We have reached capacity at 16 teams. Please join an existing team instead.', 'error');
+        setStatus('All 16 teams are full. Please join an existing team instead.', 'error');
         return;
       }
 
@@ -344,7 +344,7 @@ function validateAndCollectPlayers() {
 function validateTeamTarget() {
   // New-team creation is closed — all 16 teams are full.
   if (regMode === 'team' || teamMode === 'new') {
-    setStatus('We have reached capacity at 16 teams. Please join an existing team instead.', 'error');
+    setStatus('All 16 teams are full. Please join an existing team instead.', 'error');
     return null;
   }
 
