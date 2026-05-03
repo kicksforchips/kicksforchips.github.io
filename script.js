@@ -103,26 +103,25 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   modeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      const mode = btn.dataset.regMode;
-
-      // Whole-team registration creates a new team — closed because
-      // all 16 teams are now full. Force user back to individual mode.
-      if (mode === 'team') {
-        setStatus('All 16 teams are full. Please register as an individual and join an existing team.', 'error');
-        return;
-      }
-
-      regMode = mode;
+      regMode = btn.dataset.regMode;
       modeBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      individualFields.classList.remove('hidden');
-      individualFields.querySelector('#firstName').setAttribute('required', '');
-      individualFields.querySelector('#lastName').setAttribute('required', '');
-      individualFields.querySelector('#phone').setAttribute('required', '');
-      teamFields.classList.add('hidden');
-      teamAssignment.classList.remove('hidden');
-      submitBtn.textContent = 'Pay $20 & Register';
+      if (regMode === 'team') {
+        individualFields.classList.add('hidden');
+        individualFields.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));
+        teamFields.classList.remove('hidden');
+        teamAssignment.classList.add('hidden');
+        submitBtn.textContent = 'Pay $100 & Register Team';
+      } else {
+        individualFields.classList.remove('hidden');
+        individualFields.querySelector('#firstName').setAttribute('required', '');
+        individualFields.querySelector('#lastName').setAttribute('required', '');
+        individualFields.querySelector('#phone').setAttribute('required', '');
+        teamFields.classList.add('hidden');
+        teamAssignment.classList.remove('hidden');
+        submitBtn.textContent = 'Pay $20 & Register';
+      }
     });
   });
 
@@ -133,21 +132,18 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   toggleBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      const mode = btn.dataset.teamMode;
-
-      // New-team creation is closed — all 16 teams are spoken for.
-      if (mode === 'new') {
-        setStatus('All 16 teams are full. Please join an existing team instead.', 'error');
-        return;
-      }
-
-      teamMode = mode;
+      teamMode = btn.dataset.teamMode;
       toggleBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      joinInput.classList.remove('hidden');
-      newInfo.classList.add('hidden');
-      populateTeamSelect();
+      if (teamMode === 'join') {
+        joinInput.classList.remove('hidden');
+        newInfo.classList.add('hidden');
+        populateTeamSelect();
+      } else {
+        joinInput.classList.add('hidden');
+        newInfo.classList.remove('hidden');
+      }
     });
   });
 
@@ -342,14 +338,17 @@ function validateAndCollectPlayers() {
 
 // ===== VALIDATE TEAM TARGET =====
 function validateTeamTarget() {
-  // New-team creation is closed — all 16 teams are full.
-  if (regMode === 'team' || teamMode === 'new') {
-    setStatus('All 16 teams are full. Please join an existing team instead.', 'error');
-    return null;
+  if (regMode === 'team') {
+    const num = getNextTeamNumber();
+    if (num === null) {
+      setStatus('All 20 teams are full. Registration is closed.', 'error');
+      return null;
+    }
+    return { mode: 'new', number: num };
   }
 
   if (!teamMode) {
-    setStatus('Please select an existing team to join.', 'error');
+    setStatus('Please select "Create New Team" or "Join Existing Team".', 'error');
     return null;
   }
 
@@ -368,8 +367,12 @@ function validateTeamTarget() {
     return { mode: 'join', number: num };
   }
 
-  setStatus('Please select an existing team to join.', 'error');
-  return null;
+  const num = getNextTeamNumber();
+  if (num === null) {
+    setStatus('All 20 teams are full. Registration is closed.', 'error');
+    return null;
+  }
+  return { mode: 'new', number: num };
 }
 
 // ===== STATUS =====
