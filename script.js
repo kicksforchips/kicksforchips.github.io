@@ -117,18 +117,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     submitBtn.textContent = 'Pay $20 & Register';
   }
 
-  function showTeamMode() {
-    regMode = 'team';
-    modeBtns.forEach(b => b.classList.toggle('active', b.dataset.regMode === 'team'));
-    individualFields.classList.add('hidden');
-    individualFields.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));
-    teamFields.classList.remove('hidden');
-    teamAssignment.classList.add('hidden');
-    paymentSection.classList.remove('hidden');
-    waitlistBanner.classList.add('hidden');
-    submitBtn.textContent = 'Pay $100 & Register Team';
-  }
-
   function showWaitlistMode() {
     regMode = 'waitlist';
     teamMode = null;
@@ -147,7 +135,6 @@ document.addEventListener('DOMContentLoaded', async () => {
     btn.addEventListener('click', () => {
       const mode = btn.dataset.regMode;
       if (mode === 'waitlist') showWaitlistMode();
-      else if (mode === 'team') showTeamMode();
       else showIndividualMode();
     });
   });
@@ -171,14 +158,10 @@ document.addEventListener('DOMContentLoaded', async () => {
       toggleBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
-      if (teamMode === 'join') {
-        joinInput.classList.remove('hidden');
-        newInfo.classList.add('hidden');
-        populateTeamSelect();
-      } else {
-        joinInput.classList.add('hidden');
-        newInfo.classList.remove('hidden');
-      }
+      // Only "join" remains as a non-waitlist option
+      joinInput.classList.remove('hidden');
+      newInfo.classList.add('hidden');
+      populateTeamSelect();
     });
   });
 
@@ -416,17 +399,8 @@ function validateAndCollectPlayers() {
 
 // ===== VALIDATE TEAM TARGET =====
 function validateTeamTarget() {
-  if (regMode === 'team') {
-    const num = getNextTeamNumber();
-    if (num === null) {
-      setStatus('All 20 teams are full. Registration is closed.', 'error');
-      return null;
-    }
-    return { mode: 'new', number: num };
-  }
-
   if (!teamMode) {
-    setStatus('Please select "Create New Team" or "Join Existing Team".', 'error');
+    setStatus('Please select "Join Existing Team" or "Join Waitlist".', 'error');
     return null;
   }
 
@@ -445,12 +419,8 @@ function validateTeamTarget() {
     return { mode: 'join', number: num };
   }
 
-  const num = getNextTeamNumber();
-  if (num === null) {
-    setStatus('All 20 teams are full. Registration is closed.', 'error');
-    return null;
-  }
-  return { mode: 'new', number: num };
+  setStatus('Please select "Join Existing Team" or "Join Waitlist".', 'error');
+  return null;
 }
 
 // ===== STATUS =====
