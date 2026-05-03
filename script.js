@@ -3,7 +3,7 @@ const SUPABASE_URL = 'https://ivjaznyfqfifgyfnwbhg.supabase.co';
 const SUPABASE_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Iml2amF6bnlmcWZpZmd5Zm53YmhnIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQyMzI0NjMsImV4cCI6MjA4OTgwODQ2M30.5wozfDagfVK7nYCdre5PPllVBa_DYDzRwHFWzTAXJpc';
 const CHECKOUT_INDIVIDUAL = 'https://checkout.square.site/merchant/MLC0HN2RN1CZH/checkout/WHQ256VJPFU6F2NHF4CXZWET?src=sheet';
 const CHECKOUT_TEAM = 'https://checkout.square.site/merchant/MLC0HN2RN1CZH/checkout/OBBAR7PSJSMQ76RBOCISYRJT?src=sheet';
-const MAX_TEAMS = 20;
+const MAX_TEAMS = 16;
 const MAX_PLAYERS_PER_TEAM = 5;
 
 // ===== SUPABASE HELPERS =====
