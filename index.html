@@ -58,7 +58,13 @@
       <div class="reg-mode-toggle">
         <button type="button" class="mode-btn active" data-reg-mode="individual">Register Myself &mdash; $20</button>
         <button type="button" class="mode-btn" data-reg-mode="team">Register Whole Team &mdash; $100</button>
+        <button type="button" class="mode-btn" data-reg-mode="waitlist">Join Waitlist &mdash; Free</button>
       </div>
+
+      <!-- Waitlist Banner -->
+      <p id="waitlist-banner" class="hidden" style="margin: 0 0 1.5rem 0; padding: 14px 16px; background: rgba(74, 222, 128, 0.08); border: 1px solid rgba(74, 222, 128, 0.3); border-radius: 8px; color: #d4f5e0; font-size: 14px; line-height: 1.5;">
+        Sign up your full 5-player team below to join the waitlist &mdash; we'll text you if a spot opens.
+      </p>
 
       <form id="registration-form">
         <!-- Individual: Your Info -->
@@ -119,6 +125,7 @@
           <div class="team-toggle">
             <button type="button" class="toggle-btn" data-team-mode="new">Create New Team</button>
             <button type="button" class="toggle-btn" data-team-mode="join">Join Existing Team</button>
+            <button type="button" class="toggle-btn" data-team-mode="waitlist">Join Waitlist</button>
           </div>
           <div id="join-team-input" class="hidden">
             <label for="teamNumber">Team Number</label>
@@ -128,12 +135,12 @@
             <p class="field-hint">Only teams with fewer than 5 players are shown.</p>
           </div>
           <div id="new-team-info" class="hidden">
-            <p class="field-hint">You'll be assigned the next available team number (1&ndash;20).</p>
+            <p class="field-hint">You'll be assigned the next available team number (1&ndash;16).</p>
           </div>
         </div>
 
         <!-- Payment -->
-        <div class="payment-section">
+        <div class="payment-section" id="payment-section">
           <div class="section-label">Payment</div>
           <p class="pay-info">You'll be redirected to Square's secure checkout. Apple Pay, Google Pay, and card payments are all accepted.</p>
         </div>

@@ -100,28 +100,55 @@ document.addEventListener('DOMContentLoaded', async () => {
   const teamFields = document.getElementById('team-fields');
   const teamAssignment = document.getElementById('team-assignment');
   const submitBtn = document.getElementById('submit-btn');
+  const paymentSection = document.getElementById('payment-section');
+  const waitlistBanner = document.getElementById('waitlist-banner');
+
+  function showIndividualMode() {
+    regMode = 'individual';
+    modeBtns.forEach(b => b.classList.toggle('active', b.dataset.regMode === 'individual'));
+    individualFields.classList.remove('hidden');
+    individualFields.querySelector('#firstName').setAttribute('required', '');
+    individualFields.querySelector('#lastName').setAttribute('required', '');
+    individualFields.querySelector('#phone').setAttribute('required', '');
+    teamFields.classList.add('hidden');
+    teamAssignment.classList.remove('hidden');
+    paymentSection.classList.remove('hidden');
+    waitlistBanner.classList.add('hidden');
+    submitBtn.textContent = 'Pay $20 & Register';
+  }
+
+  function showTeamMode() {
+    regMode = 'team';
+    modeBtns.forEach(b => b.classList.toggle('active', b.dataset.regMode === 'team'));
+    individualFields.classList.add('hidden');
+    individualFields.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));
+    teamFields.classList.remove('hidden');
+    teamAssignment.classList.add('hidden');
+    paymentSection.classList.remove('hidden');
+    waitlistBanner.classList.add('hidden');
+    submitBtn.textContent = 'Pay $100 & Register Team';
+  }
+
+  function showWaitlistMode() {
+    regMode = 'waitlist';
+    teamMode = null;
+    modeBtns.forEach(b => b.classList.toggle('active', b.dataset.regMode === 'waitlist'));
+    individualFields.classList.add('hidden');
+    individualFields.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));
+    teamFields.classList.remove('hidden');
+    teamAssignment.classList.add('hidden');
+    paymentSection.classList.add('hidden');
+    waitlistBanner.classList.remove('hidden');
+    submitBtn.textContent = 'Join Waitlist';
+    setStatus('', '');
+  }
 
   modeBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      regMode = btn.dataset.regMode;
-      modeBtns.forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-
-      if (regMode === 'team') {
-        individualFields.classList.add('hidden');
-        individualFields.querySelectorAll('[required]').forEach(el => el.removeAttribute('required'));
-        teamFields.classList.remove('hidden');
-        teamAssignment.classList.add('hidden');
-        submitBtn.textContent = 'Pay $100 & Register Team';
-      } else {
-        individualFields.classList.remove('hidden');
-        individualFields.querySelector('#firstName').setAttribute('required', '');
-        individualFields.querySelector('#lastName').setAttribute('required', '');
-        individualFields.querySelector('#phone').setAttribute('required', '');
-        teamFields.classList.add('hidden');
-        teamAssignment.classList.remove('hidden');
-        submitBtn.textContent = 'Pay $20 & Register';
-      }
+      const mode = btn.dataset.regMode;
+      if (mode === 'waitlist') showWaitlistMode();
+      else if (mode === 'team') showTeamMode();
+      else showIndividualMode();
     });
   });
 
@@ -132,7 +159,15 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   toggleBtns.forEach(btn => {
     btn.addEventListener('click', () => {
-      teamMode = btn.dataset.teamMode;
+      const mode = btn.dataset.teamMode;
+
+      // "Join Waitlist" toggle inside individual mode → switch to top-level waitlist mode
+      if (mode === 'waitlist') {
+        showWaitlistMode();
+        return;
+      }
+
+      teamMode = mode;
       toggleBtns.forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
 
@@ -152,6 +187,49 @@ document.addEventListener('DOMContentLoaded', async () => {
 
   form.addEventListener('submit', async (e) => {
     e.preventDefault();
+
+    // ===== WAITLIST FLOW =====
+    if (regMode === 'waitlist') {
+      const players = [];
+      for (let i = 1; i <= 5; i++) {
+        const first = form.querySelector(`[name="teamFirst${i}"]`).value.trim();
+        const last = form.querySelector(`[name="teamLast${i}"]`).value.trim();
+        if (!first || !last) {
+          setStatus(`Please enter all 5 players' first and last names.`, 'error');
+          form.querySelector(`[name=${!first ? `teamFirst${i}` : `teamLast${i}`}]`).focus();
+          return;
+        }
+        players.push({ firstName: first, lastName: last });
+      }
+      const phone = form.querySelector('#teamPhone').value.trim();
+      if (!phone) {
+        setStatus('Please enter your phone number so we can reach you.', 'error');
+        form.querySelector('#teamPhone').focus();
+        return;
+      }
+
+      submitBtn.disabled = true;
+      setStatus('Adding your team to the waitlist...', 'success');
+
+      const res = await fetch(`${SUPABASE_URL}/rest/v1/waitlist`, {
+        method: 'POST',
+        headers: {
+          'apikey': SUPABASE_KEY,
+          'Authorization': `Bearer ${SUPABASE_KEY}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify([{ players, phone }]),
+      });
+
+      if (res.ok) {
+        setStatus(`You're on the waitlist! We'll text you at ${phone} if a spot opens.`, 'success');
+        form.reset();
+      } else {
+        setStatus('Could not save your waitlist entry. Please try again or email info@kicksforchips.com', 'error');
+        submitBtn.disabled = false;
+      }
+      return;
+    }
 
     // Save selected team number BEFORE reloading (reload resets dropdown)
     const savedTeamSelection = document.getElementById('teamNumber').value;
